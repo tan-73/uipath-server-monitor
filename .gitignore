@@ -28,3 +28,6 @@ Thumbs.db
 **/.screenshots/
 **/logs/
 **/output/
+**/.settings/
+**/.project/
+**/.tmh/
