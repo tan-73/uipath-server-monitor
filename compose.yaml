@@ -1,0 +1,64 @@
+name: uipath-homelab-monitor
+
+x-demo-common: &demo-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  restart: unless-stopped
+  read_only: true
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  pids_limit: 64
+  mem_limit: 64m
+  cpus: 0.25
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,size=16m
+  networks:
+    - demo-network
+
+services:
+  demo-alpha:
+    <<: *demo-common
+    container_name: uipath-hhm-demo-alpha
+    environment:
+      SERVICE_NAME: demo-alpha
+    ports:
+      - "100.103.92.83:18081:8080"
+    volumes:
+      - alpha-state:/state
+
+  demo-beta:
+    <<: *demo-common
+    container_name: uipath-hhm-demo-beta
+    environment:
+      SERVICE_NAME: demo-beta
+    ports:
+      - "100.103.92.83:18082:8080"
+    volumes:
+      - beta-state:/state
+
+  demo-gamma:
+    <<: *demo-common
+    container_name: uipath-hhm-demo-gamma
+    environment:
+      SERVICE_NAME: demo-gamma
+    ports:
+      - "100.103.92.83:18083:8080"
+    volumes:
+      - gamma-state:/state
+
+networks:
+  demo-network:
+    name: uipath_hhm_network
+    driver: bridge
+
+volumes:
+  alpha-state:
+    name: uipath_hhm_alpha_state
+  beta-state:
+    name: uipath_hhm_beta_state
+  gamma-state:
+    name: uipath_hhm_gamma_state
+

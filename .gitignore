@@ -1,0 +1,30 @@
+.env
+*.env
+!.env.example
+*.log
+monitoring-output/
+__pycache__/
+*.py[cod]
+
+# Local Python and test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local backups and generated archives
+*.orig
+*.bak
+*.tar
+*.tar.gz
+
+# UiPath local/generated execution artifacts
+**/.local/
+**/.screenshots/
+**/logs/
+**/output/

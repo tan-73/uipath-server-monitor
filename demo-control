@@ -1,0 +1,429 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+COMPOSE_FILE="${SCRIPT_DIR}/compose.yaml"
+
+if docker info >/dev/null 2>&1; then
+  DOCKER=(docker)
+else
+  DOCKER=(sudo docker)
+fi
+COMPOSE=("${DOCKER[@]}" compose --project-directory "${SCRIPT_DIR}" -f "${COMPOSE_FILE}")
+
+usage() {
+  cat <<'EOF'
+Usage:
+  ./demo-control status
+  ./demo-control interactive
+  ./demo-control degrade demo-beta
+  ./demo-control recover demo-beta
+  ./demo-control down demo-gamma
+  ./demo-control start demo-gamma
+  ./demo-control reset
+EOF
+}
+
+readonly TAILSCALE_HOST="100.103.92.83"
+readonly REFRESH_SECONDS="2"
+
+declare -A SERVICE_PORT=(
+  [demo-alpha]="18081"
+  [demo-beta]="18082"
+  [demo-gamma]="18083"
+)
+declare -A SERVICE_ROLE=(
+  [demo-alpha]="Healthy control"
+  [demo-beta]="Application-level failure"
+  [demo-gamma]="Hard outage"
+)
+readonly SERVICES=(demo-alpha demo-beta demo-gamma)
+
+require_exact_service() {
+  local expected="$1"
+  local actual="${2:-}"
+  if [[ "$actual" != "$expected" ]]; then
+    printf 'Rejected service %q; this action permits only %s.\n' "$actual" "$expected" >&2
+    exit 2
+  fi
+}
+
+require_arg_count() {
+  local expected="$1"
+  if [[ "$#" -ne "$((expected + 1))" ]]; then
+    usage >&2
+    exit 2
+  fi
+}
+
+set_beta_state() {
+  local state="$1"
+  "${DOCKER[@]}" exec uipath-hhm-demo-beta python /app/statectl.py "$state"
+}
+
+reset_services() {
+  "${COMPOSE[@]}" up -d demo-alpha demo-beta demo-gamma
+  "${DOCKER[@]}" exec uipath-hhm-demo-alpha python /app/statectl.py healthy
+  "${DOCKER[@]}" exec uipath-hhm-demo-beta python /app/statectl.py healthy
+  "${DOCKER[@]}" exec uipath-hhm-demo-gamma python /app/statectl.py healthy
+}
+
+show_status() {
+  "${COMPOSE[@]}" ps
+  local endpoint
+  for endpoint in \
+    http://100.103.92.83:18081/health \
+    http://100.103.92.83:18082/health \
+    http://100.103.92.83:18083/health
+  do
+    printf '%s -> ' "$endpoint"
+    curl --silent --show-error --max-time 3 --write-out ' HTTP %{http_code}\n' "$endpoint" || printf 'unreachable\n'
+  done
+}
+
+json_string() {
+  local json="$1"
+  local key="$2"
+  local pattern='"'${key}'":"([^"]*)"'
+  if [[ "$json" =~ $pattern ]]; then
+    printf '%s' "${BASH_REMATCH[1]}"
+  fi
+}
+
+json_number() {
+  local json="$1"
+  local key="$2"
+  local pattern='"'${key}'":([0-9]+([.][0-9]+)?)'
+  if [[ "$json" =~ $pattern ]]; then
+    printf '%s' "${BASH_REMATCH[1]}"
+  fi
+}
+
+bar() {
+  local value="${1:-0}"
+  local width="${2:-12}"
+  local whole="${value%%.*}"
+  [[ "$whole" =~ ^[0-9]+$ ]] || whole=0
+  (( whole > 100 )) && whole=100
+  local filled=$((whole * width / 100))
+  local empty=$((width - filled))
+  printf '%*s' "$filled" '' | tr ' ' '█'
+  printf '%*s' "$empty" '' | tr ' ' '░'
+}
+
+declare -A OBSERVED_STATE HTTP_STATUS LATENCY_MS DEPENDENCY MESSAGE
+declare -A CPU_PERCENT MEMORY_PERCENT DISK_PERCENT ERROR_COUNT PREVIOUS_OBSERVED
+declare -A INCIDENT_STARTED_EPOCH INCIDENT_ID
+declare -a EVENT_LOG=()
+declare -i INCIDENT_COUNTER=0
+readonly MAX_TIMELINE_EVENTS=5
+
+append_event() {
+  local category="$1"
+  local description="$2"
+  EVENT_LOG+=("${category}|$(date -u +%H:%M:%S)|${description}")
+  if (( ${#EVENT_LOG[@]} > MAX_TIMELINE_EVENTS )); then
+    EVENT_LOG=("${EVENT_LOG[@]: -MAX_TIMELINE_EVENTS}")
+  fi
+}
+
+format_duration() {
+  local total_seconds="$1"
+  printf '%02dm %02ds' "$((total_seconds / 60))" "$((total_seconds % 60))"
+}
+
+open_incident() {
+  local service="$1"
+  local state="$2"
+  local context="$3"
+  local category="warning"
+  [[ "$state" == "Down" ]] && category="critical"
+
+  if [[ -z "${INCIDENT_STARTED_EPOCH[$service]:-}" ]]; then
+    ((INCIDENT_COUNTER += 1))
+    INCIDENT_ID[$service]="INC-$(printf '%03d' "$INCIDENT_COUNTER")"
+    INCIDENT_STARTED_EPOCH[$service]="$(date +%s)"
+    append_event "$category" "${INCIDENT_ID[$service]} OPEN · ${service} · ${state} · ${context}"
+  fi
+}
+
+record_state_transition() {
+  local service="$1"
+  local previous="$2"
+  local current="$3"
+  local now duration incident
+
+  if [[ "$current" == "Healthy" ]]; then
+    if [[ -n "${INCIDENT_STARTED_EPOCH[$service]:-}" ]]; then
+      now="$(date +%s)"
+      duration="$((now - INCIDENT_STARTED_EPOCH[$service]))"
+      incident="${INCIDENT_ID[$service]}"
+      append_event recovery "${incident} RESOLVED · ${service} · recovery observed after $(format_duration "$duration")"
+      unset 'INCIDENT_STARTED_EPOCH[$service]' 'INCIDENT_ID[$service]'
+    else
+      append_event recovery "${service} · ${previous} → Healthy"
+    fi
+    return
+  fi
+
+  if [[ -z "${INCIDENT_STARTED_EPOCH[$service]:-}" ]]; then
+    open_incident "$service" "$current" "${previous} → ${current}"
+  elif [[ "$previous" == "Degraded" && "$current" == "Down" ]]; then
+    append_event critical "${INCIDENT_ID[$service]} ESCALATED · ${service} · Degraded → Down"
+  else
+    append_event warning "${INCIDENT_ID[$service]} UPDATE · ${service} · ${previous} → ${current}"
+  fi
+}
+
+probe_service() {
+  local service="$1"
+  local endpoint="http://${TAILSCALE_HOST}:${SERVICE_PORT[$service]}"
+  local health_body health_result health_code latency_seconds curl_exit
+  local metrics_body metrics_result
+
+  health_body="$(mktemp)"
+  if health_result="$(curl --silent --show-error --connect-timeout 1 --max-time 3 --output "$health_body" --write-out '%{http_code}|%{time_total}' "${endpoint}/health" 2>/dev/null)"; then
+    health_code="${health_result%%|*}"
+    latency_seconds="${health_result#*|}"
+    HTTP_STATUS[$service]="$health_code"
+    LATENCY_MS[$service]="$(awk -v seconds="$latency_seconds" 'BEGIN { printf "%.0f", seconds * 1000 }')"
+    health_result="$(<"$health_body")"
+    DEPENDENCY[$service]="$(json_string "$health_result" dependency)"
+    MESSAGE[$service]="$(json_string "$health_result" message)"
+
+    if [[ "$health_code" == "200" && "$(json_string "$health_result" status)" == "healthy" ]]; then
+      OBSERVED_STATE[$service]="Healthy"
+    else
+      OBSERVED_STATE[$service]="Degraded"
+    fi
+
+    metrics_body="$(mktemp)"
+    if metrics_result="$(curl --silent --show-error --connect-timeout 1 --max-time 2 --output "$metrics_body" --write-out '%{http_code}' "${endpoint}/metrics" 2>/dev/null)" && [[ "$metrics_result" == "200" ]]; then
+      metrics_result="$(<"$metrics_body")"
+      CPU_PERCENT[$service]="$(json_number "$metrics_result" cpuPercent)"
+      MEMORY_PERCENT[$service]="$(json_number "$metrics_result" memoryPercent)"
+      DISK_PERCENT[$service]="$(json_number "$metrics_result" diskPercent)"
+      ERROR_COUNT[$service]="$(json_number "$metrics_result" errorCount)"
+    else
+      CPU_PERCENT[$service]="-"
+      MEMORY_PERCENT[$service]="-"
+      DISK_PERCENT[$service]="-"
+      ERROR_COUNT[$service]="-"
+    fi
+    rm -f -- "$metrics_body"
+  else
+    curl_exit=$?
+    OBSERVED_STATE[$service]="Down"
+    HTTP_STATUS[$service]="---"
+    LATENCY_MS[$service]="---"
+    DEPENDENCY[$service]="unreachable"
+    CPU_PERCENT[$service]="-"
+    MEMORY_PERCENT[$service]="-"
+    DISK_PERCENT[$service]="-"
+    ERROR_COUNT[$service]="-"
+    case "$curl_exit" in
+      7) MESSAGE[$service]="Connection refused" ;;
+      28) MESSAGE[$service]="Request timed out" ;;
+      *) MESSAGE[$service]="No HTTP response (curl ${curl_exit})" ;;
+    esac
+  fi
+  rm -f -- "$health_body"
+
+  if [[ -z "${PREVIOUS_OBSERVED[$service]:-}" ]]; then
+    if [[ "${OBSERVED_STATE[$service]}" != "Healthy" ]]; then
+      open_incident "$service" "${OBSERVED_STATE[$service]}" "present when dashboard started"
+    fi
+  elif [[ "${PREVIOUS_OBSERVED[$service]}" != "${OBSERVED_STATE[$service]}" ]]; then
+    record_state_transition "$service" "${PREVIOUS_OBSERVED[$service]}" "${OBSERVED_STATE[$service]}"
+  fi
+  PREVIOUS_OBSERVED[$service]="${OBSERVED_STATE[$service]}"
+}
+
+collect_status() {
+  local service
+  for service in "${SERVICES[@]}"; do
+    probe_service "$service"
+  done
+}
+
+state_colour() {
+  case "$1" in
+    Healthy) printf '%s' "$GREEN" ;;
+    Degraded) printf '%s' "$YELLOW" ;;
+    Down) printf '%s' "$RED" ;;
+    *) printf '%s' "$DIM" ;;
+  esac
+}
+
+render_dashboard() {
+  local service colour state cpu memory message event
+  local category event_time event_text event_colour event_icon open_incidents
+  printf '\033[H\033[2J'
+  printf '%s%s  UiPath Homelab Health Monitor%s  %sLIVE%s\n' "$BOLD" "$CYAN" "$RESET" "$GREEN" "$RESET"
+  printf '%sObserver view: HTTP over Tailscale · %s UTC · refresh %ss%s\n' "$DIM" "$(date -u '+%Y-%m-%d %H:%M:%S')" "$REFRESH_SECONDS" "$RESET"
+  printf '%s\n' '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+
+  for service in "${SERVICES[@]}"; do
+    state="${OBSERVED_STATE[$service]}"
+    colour="$(state_colour "$state")"
+    cpu="${CPU_PERCENT[$service]}"
+    memory="${MEMORY_PERCENT[$service]}"
+    message="${MESSAGE[$service]}"
+    printf '%s● %-12s%s  %-25s  %s%-9s%s  HTTP %-3s  RTT %4s ms\n' "$colour" "$service" "$RESET" "${SERVICE_ROLE[$service]}" "$colour" "$state" "$RESET" "${HTTP_STATUS[$service]}" "${LATENCY_MS[$service]}"
+    if [[ "$cpu" != "-" ]]; then
+      printf '  CPU %s %5s%%   MEM %s %5s%%   Disk %5s%%   Errors %s  %s(simulated)%s\n' "$(bar "$cpu")" "$cpu" "$(bar "$memory")" "$memory" "${DISK_PERCENT[$service]}" "${ERROR_COUNT[$service]}" "$DIM" "$RESET"
+    else
+      printf '  CPU %s────────────%s       MEM %s────────────%s       No metrics while unavailable\n' "$DIM" "$RESET" "$DIM" "$RESET"
+    fi
+    printf '  %s%s%s · %s\n\n' "$DIM" "${DEPENDENCY[$service]}" "$RESET" "$message"
+  done
+
+  open_incidents=0
+  for service in "${SERVICES[@]}"; do
+    [[ -n "${INCIDENT_STARTED_EPOCH[$service]:-}" ]] && ((open_incidents += 1))
+  done
+  printf '%sIncident timeline%s  %s(session · open: %s)%s\n' "$BOLD" "$RESET" "$DIM" "$open_incidents" "$RESET"
+  if (( ${#EVENT_LOG[@]} == 0 )); then
+    printf '  %s◆%s Waiting for a state change…\n' "$DIM" "$RESET"
+  else
+    for event in "${EVENT_LOG[@]}"; do
+      IFS='|' read -r category event_time event_text <<<"$event"
+      case "$category" in
+        warning) event_colour="$YELLOW"; event_icon="⚠" ;;
+        critical) event_colour="$RED"; event_icon="✖" ;;
+        recovery) event_colour="$GREEN"; event_icon="✓" ;;
+        action) event_colour="$CYAN"; event_icon="▶" ;;
+        *) event_colour="$DIM"; event_icon="◆" ;;
+      esac
+      printf '  %s%s%s  %s%s%s  %s\n' "$event_colour" "$event_icon" "$RESET" "$DIM" "$event_time" "$RESET" "$event_text"
+    done
+  fi
+
+  printf '%s\n' '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+  printf '%sControls%s  %s[1/D]%s Degrade beta   %s[2/H]%s Recover beta   %s[3/X]%s Stop gamma\n' "$BOLD" "$RESET" "$YELLOW" "$RESET" "$GREEN" "$RESET" "$RED" "$RESET"
+  printf '          %s[4/S]%s Start gamma    %s[R]%s Reset all       %s[Q]%s Quit\n' "$GREEN" "$RESET" "$CYAN" "$RESET" "$DIM" "$RESET"
+  printf '%s%s%s\n' "$BOLD" "$LAST_ACTION" "$RESET"
+}
+
+interactive_cleanup() {
+  printf '%s\033[?25h\033[?1049l' "$RESET"
+}
+
+interactive_dashboard() {
+  if [[ ! -t 0 || ! -t 1 ]]; then
+    printf 'Interactive mode requires a terminal. Run: ./demo-control interactive\n' >&2
+    return 2
+  fi
+
+  printf 'Checking access to the isolated demo stack (sudo may prompt once)...\n'
+  if ! "${DOCKER[@]}" info >/dev/null; then
+    printf 'Docker access is required for the allowlisted presentation controls.\n' >&2
+    return 1
+  fi
+
+  readonly RESET=$'\033[0m' BOLD=$'\033[1m' DIM=$'\033[2m'
+  readonly RED=$'\033[31m' GREEN=$'\033[32m' YELLOW=$'\033[33m' CYAN=$'\033[36m'
+  LAST_ACTION="Ready — start UiPath on Windows, then trigger a scenario here."
+  append_event info "Dashboard started · observing three services over Tailscale HTTP"
+  trap interactive_cleanup EXIT
+  trap 'exit 130' INT TERM
+  printf '\033[?1049h\033[?25l'
+
+  local key
+  while true; do
+    collect_status
+    render_dashboard
+    key=""
+    if IFS= read -rsn1 -t "$REFRESH_SECONDS" key; then
+      case "$key" in
+        1|d|D)
+          if set_beta_state degraded >/dev/null 2>&1; then
+            LAST_ACTION="Action: demo-beta degraded — watch UiPath classify HTTP 503."
+            append_event action "Fault injected · degrade demo-beta"
+          else
+            LAST_ACTION="Action failed: could not degrade demo-beta."
+            append_event critical "Action failed · could not degrade demo-beta"
+          fi
+          ;;
+        2|h|H)
+          if set_beta_state healthy >/dev/null 2>&1; then
+            LAST_ACTION="Action: demo-beta recovered — watch for the recovery transition."
+            append_event action "Recovery requested · recover demo-beta"
+          else
+            LAST_ACTION="Action failed: could not recover demo-beta."
+            append_event critical "Action failed · could not recover demo-beta"
+          fi
+          ;;
+        3|x|X)
+          if "${COMPOSE[@]}" stop demo-gamma >/dev/null 2>&1; then
+            LAST_ACTION="Action: demo-gamma stopped — watch UiPath detect a hard outage."
+            append_event action "Fault injected · stop demo-gamma"
+          else
+            LAST_ACTION="Action failed: could not stop demo-gamma."
+            append_event critical "Action failed · could not stop demo-gamma"
+          fi
+          ;;
+        4|s|S)
+          if "${COMPOSE[@]}" start demo-gamma >/dev/null 2>&1; then
+            LAST_ACTION="Action: demo-gamma started — recovery will appear when HTTP returns."
+            append_event action "Recovery requested · start demo-gamma"
+          else
+            LAST_ACTION="Action failed: could not start demo-gamma."
+            append_event critical "Action failed · could not start demo-gamma"
+          fi
+          ;;
+        r|R)
+          if reset_services >/dev/null 2>&1; then
+            LAST_ACTION="Action: all three demo services reset to the healthy baseline."
+            append_event action "Baseline reset requested · all demo services"
+          else
+            LAST_ACTION="Action failed: reset did not complete."
+            append_event critical "Action failed · baseline reset did not complete"
+          fi
+          ;;
+        q|Q) break ;;
+      esac
+    fi
+  done
+}
+
+command="${1:-}"
+case "$command" in
+  status)
+    require_arg_count 1 "$@"
+    show_status
+    ;;
+  interactive|ui)
+    require_arg_count 1 "$@"
+    interactive_dashboard
+    ;;
+  degrade)
+    require_arg_count 2 "$@"
+    require_exact_service demo-beta "${2:-}"
+    set_beta_state degraded
+    ;;
+  recover)
+    require_arg_count 2 "$@"
+    require_exact_service demo-beta "${2:-}"
+    set_beta_state healthy
+    ;;
+  down)
+    require_arg_count 2 "$@"
+    require_exact_service demo-gamma "${2:-}"
+    "${COMPOSE[@]}" stop demo-gamma
+    ;;
+  start)
+    require_arg_count 2 "$@"
+    require_exact_service demo-gamma "${2:-}"
+    "${COMPOSE[@]}" start demo-gamma
+    ;;
+  reset)
+    require_arg_count 1 "$@"
+    reset_services
+    show_status
+    ;;
+  *)
+    usage >&2
+    exit 2
+    ;;
+esac

@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+IMPLEMENTATION.md
+README.md
+demo-control
+tests/
+monitoring-output/
+__pycache__/
+*.py[cod]
+
