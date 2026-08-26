@@ -1,0 +1,25 @@
+﻿TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId
+2026-08-22T05:29:05.5705018Z,demo-alpha,Unknown,Healthy,200,528,All checks passed,False,Initialization,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:06.1216108Z,demo-beta,Unknown,Healthy,200,361,All checks passed,False,Initialization,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:06.4021452Z,demo-gamma,Unknown,Healthy,200,158,All checks passed,False,Initialization,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:11.9076516Z,demo-alpha,Healthy,Healthy,200,198,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:12.2697464Z,demo-beta,Healthy,Healthy,200,227,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:12.6552889Z,demo-gamma,Healthy,Healthy,200,252,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:18.0281113Z,demo-alpha,Healthy,Healthy,200,217,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:20.4380668Z,demo-beta,Healthy,Degraded,503,2290,Simulated dependency failure,False,WarningPending,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:20.7436706Z,demo-gamma,Healthy,Healthy,200,170,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:26.0617992Z,demo-alpha,Healthy,Healthy,200,167,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:28.5358923Z,demo-beta,Degraded,Degraded,503,2328,Simulated dependency failure,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:28.9659951Z,demo-gamma,Healthy,Healthy,200,311,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:34.3026926Z,demo-alpha,Healthy,Healthy,200,177,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:36.7361368Z,demo-beta,Degraded,Degraded,503,2318,Simulated dependency failure,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:37.0409968Z,demo-gamma,Healthy,Healthy,200,191,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:42.3903323Z,demo-alpha,Healthy,Healthy,200,193,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:44.8708490Z,demo-beta,Degraded,Degraded,503,2368,Simulated dependency failure,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:45.1865159Z,demo-gamma,Healthy,Healthy,200,214,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:50.5425176Z,demo-alpha,Healthy,Healthy,200,210,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:53.1624343Z,demo-beta,Degraded,Degraded,503,2500,Simulated dependency failure,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:53.4535138Z,demo-gamma,Healthy,Healthy,200,170,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:29:58.8397245Z,demo-alpha,Healthy,Healthy,200,239,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:30:01.7336125Z,demo-beta,Degraded,Degraded,503,2792,Simulated dependency failure,False,None,fcf8434610af4676a351ffd141b5b8f9
+2026-08-22T05:30:02.0533726Z,demo-gamma,Healthy,Healthy,200,232,All checks passed,False,None,fcf8434610af4676a351ffd141b5b8f9

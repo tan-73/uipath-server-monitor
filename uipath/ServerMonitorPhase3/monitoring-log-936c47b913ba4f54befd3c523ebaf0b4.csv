@@ -1,0 +1,25 @@
+﻿TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId
+2026-08-22T05:17:42.3750312Z,demo-alpha,Unknown,Healthy,200,558,All checks passed,False,Initialization,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:42.9175293Z,demo-beta,Unknown,Healthy,200,367,All checks passed,False,Initialization,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:43.3124786Z,demo-gamma,Unknown,Healthy,200,287,All checks passed,False,Initialization,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:48.7424422Z,demo-alpha,Healthy,Healthy,200,234,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:49.2706357Z,demo-beta,Healthy,Healthy,200,339,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:49.6442303Z,demo-gamma,Healthy,Healthy,200,242,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:55.1139451Z,demo-alpha,Healthy,Healthy,200,308,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:55.5082538Z,demo-beta,Healthy,Healthy,200,273,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:17:55.8863545Z,demo-gamma,Healthy,Healthy,200,258,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:01.3294324Z,demo-alpha,Healthy,Healthy,200,289,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:02.0465492Z,demo-beta,Healthy,Healthy,200,583,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:02.3436413Z,demo-gamma,Healthy,Healthy,200,177,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:07.7199919Z,demo-alpha,Healthy,Healthy,200,228,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:08.0033821Z,demo-beta,Healthy,Healthy,200,164,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:08.3207767Z,demo-gamma,Healthy,Healthy,200,200,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:14.0579281Z,demo-alpha,Healthy,Healthy,200,580,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:14.5791604Z,demo-beta,Healthy,Healthy,200,414,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:14.9629341Z,demo-gamma,Healthy,Healthy,200,253,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:20.4659064Z,demo-alpha,Healthy,Healthy,200,351,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:20.8129800Z,demo-beta,Healthy,Healthy,200,220,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:21.4244689Z,demo-gamma,Healthy,Healthy,200,490,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:26.8280700Z,demo-alpha,Healthy,Healthy,200,244,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:29.6761388Z,demo-beta,Healthy,Degraded,503,2746,Simulated dependency failure,False,WarningPending,936c47b913ba4f54befd3c523ebaf0b4
+2026-08-22T05:18:30.2147373Z,demo-gamma,Healthy,Healthy,200,429,All checks passed,False,None,936c47b913ba4f54befd3c523ebaf0b4

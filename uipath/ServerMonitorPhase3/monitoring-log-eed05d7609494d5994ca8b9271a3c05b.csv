@@ -1,0 +1,2 @@
+﻿TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId
+2026-08-22T05:12:26.0546486Z,demo-alpha,Unknown,Healthy,200,493,All checks passed,False,Initialization,eed05d7609494d5994ca8b9271a3c05b
