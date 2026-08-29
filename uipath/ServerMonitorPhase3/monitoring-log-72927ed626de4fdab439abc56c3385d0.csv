@@ -1,0 +1,19 @@
+﻿TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId
+2026-08-29T05:46:37.1525461Z,demo-alpha,Unknown,Healthy,200,562,All checks passed,False,Initialization,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:37.7699726Z,demo-beta,Unknown,Healthy,200,304,All checks passed,False,Initialization,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:38.2940076Z,demo-gamma,Unknown,Healthy,200,243,All checks passed,False,Initialization,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:43.6761758Z,demo-alpha,Healthy,Healthy,200,144,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:44.0861597Z,demo-beta,Healthy,Healthy,200,190,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:44.4690585Z,demo-gamma,Healthy,Healthy,200,123,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:49.8081938Z,demo-alpha,Healthy,Healthy,200,172,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:52.1872201Z,demo-beta,Healthy,Degraded,503,2281,Simulated dependency failure,False,WarningPending,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:46:59.5017605Z,demo-gamma,Healthy,Healthy,200,148,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:04.8359664Z,demo-alpha,Healthy,Healthy,200,162,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:05.0840350Z,demo-beta,Degraded,Healthy,200,129,All checks passed,False,RecoveryPending,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:10.9032681Z,demo-gamma,Healthy,Healthy,200,202,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:16.2620744Z,demo-alpha,Healthy,Healthy,200,128,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:16.5892715Z,demo-beta,Healthy,Healthy,200,198,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:16.9150282Z,demo-gamma,Healthy,Healthy,200,208,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:22.4886207Z,demo-alpha,Healthy,Healthy,200,434,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:22.8948795Z,demo-beta,Healthy,Healthy,200,295,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0
+2026-08-29T05:47:23.1476888Z,demo-gamma,Healthy,Healthy,200,136,All checks passed,False,None,72927ed626de4fdab439abc56c3385d0

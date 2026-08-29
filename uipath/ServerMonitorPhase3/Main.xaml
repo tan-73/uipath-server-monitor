@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="HealthMonitor" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umsa="clr-namespace:UiPath.Mail.SMTP.Activities;assembly=UiPath.Mail.Activities" xmlns:uwah="clr-namespace:UiPath.Web.Activities.Http;assembly=UiPath.Web.Activities" xmlns:uwahm="clr-namespace:UiPath.Web.Activities.Http.Models;assembly=UiPath.Web.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="HealthMonitor" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umae="clr-namespace:UiPath.Mail.Activities.Enums;assembly=UiPath.Mail.Activities" xmlns:umame="clr-namespace:UiPath.MicrosoftOffice365.Activities.Mail.Enums;assembly=UiPath.Mail.Activities" xmlns:usau="clr-namespace:UiPath.Shared.Activities.Utils;assembly=UiPath.Mail.Activities" xmlns:uwah="clr-namespace:UiPath.Web.Activities.Http;assembly=UiPath.Web.Activities" xmlns:uwahm="clr-namespace:UiPath.Web.Activities.Http.Models;assembly=UiPath.Web.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -40,6 +40,14 @@
       <x:String>System.Dynamic</x:String>
       <x:String>System.ComponentModel</x:String>
       <x:String>System.Collections.Specialized</x:String>
+      <x:String>UiPath.Mail</x:String>
+      <x:String>UiPath.MicrosoftOffice365.Activities.Mail.Enums</x:String>
+      <x:String>UiPath.Shared.Activities.Utils</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>UiPath.Mail.Activities.Enums</x:String>
+      <x:String>UiPath.Mail.SMTP.Activities</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>UiPath.Mail.Activities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -96,9 +104,13 @@
       <AssemblyReference>System.ComponentModel.EventBasedAsync</AssemblyReference>
       <AssemblyReference>System.ComponentModel.Primitives</AssemblyReference>
       <AssemblyReference>System.Collections.Specialized</AssemblyReference>
+      <AssemblyReference>UiPath.Mail.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>System.Net.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.Mail.Activities.Design</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Homelab Health Monitor - Phase 3" sap:VirtualizedContainerService.HintSize="854.6666666666666,11366.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Homelab Health Monitor - Phase 3" sap:VirtualizedContainerService.HintSize="854.6666666666666,12418" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="s:String[]" Name="serviceDefinitions" />
       <Variable x:TypeArguments="scg:Dictionary(x:String, x:String)" Name="previousStates" />
@@ -230,21 +242,21 @@
     </Assign>
     <ui:AppendLine File="{x:Null}" DisplayName="Write CSV Header" FileName="[logPath]" sap:VirtualizedContainerService.HintSize="604.6666666666666,168.66666666666666" sap2010:WorkflowViewState.IdRef="AppendLine_1" Text="TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId" UseDefaultEncoding="False" />
     <WriteLine DisplayName="Write Run Start" sap:VirtualizedContainerService.HintSize="604.6666666666666,124" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Monitor started | RunId=&quot; &amp; runId &amp; &quot; | Cycles=&quot; &amp; maxCycles.ToString &amp; &quot; | IntervalSeconds=&quot; &amp; pollIntervalSeconds.ToString]" />
-    <While DisplayName="Monitoring Loop" sap:VirtualizedContainerService.HintSize="604.6666666666666,8938" sap2010:WorkflowViewState.IdRef="While_1" Condition="[currentCycle &lt; maxCycles]">
-      <Sequence DisplayName="Monitoring Cycle" sap:VirtualizedContainerService.HintSize="558,8740.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_5">
+    <While DisplayName="Monitoring Loop" sap:VirtualizedContainerService.HintSize="604.6666666666666,9989.333333333334" sap2010:WorkflowViewState.IdRef="While_1" Condition="[currentCycle &lt; maxCycles]">
+      <Sequence DisplayName="Monitoring Cycle" sap:VirtualizedContainerService.HintSize="558,9792" sap2010:WorkflowViewState.IdRef="Sequence_5">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
         <WriteLine DisplayName="Write Cycle Start" sap:VirtualizedContainerService.HintSize="524,124" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="[&quot;Starting cycle &quot; &amp; (currentCycle + 1).ToString &amp; &quot; of &quot; &amp; maxCycles.ToString]" />
-        <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Monitored Service" sap:VirtualizedContainerService.HintSize="524,8044.666666666667" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[serviceDefinitions]">
+        <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Monitored Service" sap:VirtualizedContainerService.HintSize="524,9166.666666666666" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[serviceDefinitions]">
           <ui:ForEach.Body>
             <ActivityAction x:TypeArguments="x:String">
               <ActivityAction.Argument>
                 <DelegateInArgument x:TypeArguments="x:String" Name="serviceDefinition" />
               </ActivityAction.Argument>
-              <Sequence DisplayName="Check Current Service" sap:VirtualizedContainerService.HintSize="522,7912.666666666667" sap2010:WorkflowViewState.IdRef="Sequence_2">
+              <Sequence DisplayName="Check Current Service" sap:VirtualizedContainerService.HintSize="522,9034.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_2">
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -481,35 +493,73 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                   </Assign.Value>
                 </Assign>
                 <Assign DisplayName="Enable SMTP Practice Mode" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_46">
-      <Assign.To>
-        <OutArgument x:TypeArguments="x:Boolean">[smtpPracticeMode]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <If Condition="[alertRequired AndAlso smtpPracticeMode]" DisplayName="Send SMTP Practice Notification" sap:VirtualizedContainerService.HintSize="488,1400">
-      <If.Then>
-        <TryCatch DisplayName="SMTP Practice Send" sap:VirtualizedContainerService.HintSize="484,1180">
-          <TryCatch.Try>
-            <Sequence DisplayName="Send SMTP Practice Email" sap:VirtualizedContainerService.HintSize="450,900">
-              <umsa:SendMail Connection="{x:Null}" To="anandtanmay474@gmail.com" Subject="[&quot;[UiPath SMTP Practice] &quot; &amp; serviceName &amp; &quot; [&quot; &amp; currentState &amp; &quot;]&quot;]" Body="[&quot;SMTP practice notification&quot; &amp; Environment.NewLine &amp; &quot;Service: &quot; &amp; serviceName &amp; Environment.NewLine &amp; &quot;Previous state: &quot; &amp; previousState &amp; Environment.NewLine &amp; &quot;Current state: &quot; &amp; currentState &amp; Environment.NewLine &amp; &quot;HTTP status: &quot; &amp; httpStatus.ToString &amp; Environment.NewLine &amp; &quot;Reason: &quot; &amp; reason &amp; Environment.NewLine &amp; &quot;Transition: &quot; &amp; transitionAction &amp; Environment.NewLine &amp; &quot;Timestamp UTC: &quot; &amp; timestampUtc &amp; Environment.NewLine &amp; &quot;Run ID: &quot; &amp; runId]" DisplayName="Send SMTP Practice Email" />
-            </Sequence>
-          </TryCatch.Try>
-          <TryCatch.Catches>
-            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_2">
-              <ActivityAction x:TypeArguments="s:Exception">
-                <ActivityAction.Argument>
-                  <DelegateInArgument x:TypeArguments="s:Exception" Name="smtpException" />
-                </ActivityAction.Argument>
-                <WriteLine DisplayName="Write SMTP Practice Failure" Text="[&quot;SMTP practice failed for &quot; &amp; serviceName &amp; &quot;: &quot; &amp; smtpException.Message]" />
-              </ActivityAction>
-            </Catch>
-          </TryCatch.Catches>
-        </TryCatch>
-      </If.Then>
-    </If>
-    <Assign DisplayName="Increment Total Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_24">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Boolean">[smtpPracticeMode]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <If Condition="[alertRequired AndAlso smtpPracticeMode]" DisplayName="Send SMTP Practice Notification" sap:VirtualizedContainerService.HintSize="488,945.3333333333334" sap2010:WorkflowViewState.IdRef="If_1">
+                  <If.Then>
+                    <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="452,692.6666666666666" sap2010:WorkflowViewState.IdRef="TryCatch_4">
+                      <TryCatch.Try>
+                        <Sequence DisplayName="Try" sap:VirtualizedContainerService.HintSize="450,402" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" Email="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" Port="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" Server="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="&quot;This is a test email from uipath&quot;" ConnectionId="ba538c0f-f5ff-4c36-be88-e37fbf25a09a" ConnectionMode="IntegrationService" CreatedAfterSolutionSupport="True" DisplayName="Send SMTP Email" EnableSSL="True" sap:VirtualizedContainerService.HintSize="416,342" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" SecureConnection="Auto" Subject="Test email" To="anandtanmay474@gmail.com" UseISConnection="True" UseRichTextEditor="True">
+                            <ui:SendMail.AttachmentsBackup>
+                              <usau:BackupSlot x:TypeArguments="umame:AttachmentInputMode" StoredValue="Existing">
+                                <usau:BackupSlot.BackupValues>
+                                  <scg:Dictionary x:TypeArguments="umame:AttachmentInputMode, scg:List(x:Object)" />
+                                </usau:BackupSlot.BackupValues>
+                              </usau:BackupSlot>
+                            </ui:SendMail.AttachmentsBackup>
+                            <ui:SendMail.ConnectionDetailsBackupSlot>
+                              <usau:BackupSlot x:TypeArguments="umae:ConnectionDetails" StoredValue="IntegrationService">
+                                <usau:BackupSlot.BackupValues>
+                                  <scg:Dictionary x:TypeArguments="umae:ConnectionDetails, scg:List(x:Object)" />
+                                </usau:BackupSlot.BackupValues>
+                              </usau:BackupSlot>
+                            </ui:SendMail.ConnectionDetailsBackupSlot>
+                            <ui:SendMail.Files>
+                              <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+                            </ui:SendMail.Files>
+                          </ui:SendMail>
+                        </Sequence>
+                      </TryCatch.Try>
+                      <TryCatch.Catches>
+                        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_3">
+                          <ActivityAction x:TypeArguments="s:Exception">
+                            <ActivityAction.Argument>
+                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                            </ActivityAction.Argument>
+                            <Sequence DisplayName="Catch" sap:VirtualizedContainerService.HintSize="450,90.66666666666667" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                            </Sequence>
+                          </ActivityAction>
+                        </Catch>
+                      </TryCatch.Catches>
+                      <TryCatch.Finally>
+                        <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="450,90.66666666666667" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </Sequence>
+                      </TryCatch.Finally>
+                    </TryCatch>
+                  </If.Then>
+                </If>
+                <Assign DisplayName="Increment Total Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_24">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[totalChecks]</OutArgument>
                   </Assign.To>
@@ -648,7 +698,7 @@ transitionAction &amp; "," &amp; runId]</InArgument>
             <InArgument x:TypeArguments="x:Int32">[currentCycle + 1]</InArgument>
           </Assign.Value>
         </Assign>
-        <If Condition="[currentCycle &lt; maxCycles]" DisplayName="Wait Before Next Cycle" sap:VirtualizedContainerService.HintSize="524,335.3333333333333" sap2010:WorkflowViewState.IdRef="If_1">
+        <If Condition="[currentCycle &lt; maxCycles]" DisplayName="Wait Before Next Cycle" sap:VirtualizedContainerService.HintSize="524,264.6666666666667" sap2010:WorkflowViewState.IdRef="If_5">
           <If.Then>
             <Delay DisplayName="Polling Interval" Duration="[TimeSpan.FromSeconds(pollIntervalSeconds)]" sap:VirtualizedContainerService.HintSize="450,92" sap2010:WorkflowViewState.IdRef="Delay_1" />
           </If.Then>

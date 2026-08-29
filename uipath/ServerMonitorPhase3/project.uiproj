@@ -1,0 +1,6 @@
+{
+  "Name": "ServerMonitor",
+  "ProjectType": "Process",
+  "Description": "UiPath Homelab Health Monitor",
+  "MainFile": "Main.xaml"
+}
