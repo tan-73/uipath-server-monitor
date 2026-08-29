@@ -71,3 +71,12 @@ Use `demo-control` for demonstration actions. Do not stop, reconfigure, expose, 
 - Keep secrets, logs, caches, backups, archives, and machine-specific files ignored by Git.
 - Validate server tests and Compose configuration on Linux; validate UiPath with Analyze File and runtime tests on Windows.
 - Treat the UiPath workflow and Linux demo stack as separate deployable components connected by documented HTTP endpoints.
+
+## SMTP practice status
+
+The UiPath project includes a temporary SMTP practice path using `UiPath.Mail.Activities`.
+The Integration Service SMTP connection is configured on Windows for the account
+`wa.tanmay1@gmail.com`, with practice mail addressed to `anandtanmay474@gmail.com`.
+This confirms SMTP connectivity only; it is not the completed Phase 4 alert implementation.
+Do not commit passwords, app passwords, connection IDs, or other mail secrets. The temporary
+practice path must be removed before production transition-based alerts are implemented.

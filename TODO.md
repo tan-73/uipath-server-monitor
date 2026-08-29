@@ -9,3 +9,13 @@ later phases -
 1. implement an unattended uipath robot to constantly monitor services
 2. when a service goes down, uipath must attempt to restart a service (implement a clean mechanism for this)
 3. if possible, connect to any service like uptime kuma for better monitoring
+
+## SMTP practice follow-up
+
+- SMTP connectivity practice is complete using the UiPath Integration Service connection.
+- Remove the temporary SMTP practice mode and practice-only wording.
+- Implement proper warning, critical, escalation, and recovery SMTP alerts.
+- Send recovery mail for both Degraded → Healthy and Down → Healthy transitions.
+- Set `AlertSent` from the actual SMTP send result.
+- Preserve duplicate suppression and ensure SMTP failures do not stop monitoring.
+- Update Phase 4 status only after Analyze File and Windows runtime tests pass.

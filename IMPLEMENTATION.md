@@ -2,7 +2,7 @@
 
 ## Status
 
-Updated 2026-08-21 after the interactive presentation dashboard was tested successfully.
+Updated 2026-08-29 after the interactive presentation dashboard was tested successfully.
 
 | Work item | Status |
 |---|---|
@@ -10,11 +10,12 @@ Updated 2026-08-21 after the interactive presentation dashboard was tested succe
 | Phase 2 — isolated Docker demo stack | Complete |
 | Phase 3 — UiPath monitor | Complete and tested from Windows |
 | Interactive presentation CLI | Complete and user-tested |
-| Phase 4 — Gmail alerts and final reporting | Awaiting user go-ahead |
+| SMTP practice connection | Complete and tested from Windows |
+| Phase 4 — Gmail alerts and final reporting | SMTP practice only; proper alerts not implemented |
 | Phase 5 — rehearsal and final documentation | Not started |
 
-This document remains the authoritative handoff for continuing the build. Phase 4 must not
-begin until the user explicitly gives the go-ahead. Preserve the existing demo behavior and
+This document remains the authoritative handoff for continuing the build. SMTP connectivity practice
+is complete, but Phase 4 proper alerting is still incomplete. Preserve the existing demo behavior and
 all unrelated homelab services.
 
 ## Project objective
@@ -74,7 +75,7 @@ Windows computer
     ├── Classifies service state
     ├── Tracks previous state
     ├── Writes monitoring results
-    └── Sends warning, critical, and recovery alerts (Phase 4)
+    └── Contains temporary SMTP practice notifications; proper alerts remain Phase 4 work
              │
              │ Tailscale
              ▼
@@ -261,12 +262,11 @@ completed an 18-cycle healthy run with 54 healthy checks, then a separate degrad
 correctly detected `demo-beta` as Degraded from HTTP 503 and suppressed its duplicate alert
 transition on the following cycle.
 
-The active corrected workflow is on the user's Windows machine. A generated reference project
-and import notes are retained under `uipath/generated/`. The initially generated XAML required
-a manual UiPath Studio repair: an unrendered `ErrorActivity` beneath “Record Request Start”
-was replaced with a proper Try Catch containing a `System.Exception` catch. Do not assume the
-archived generated XAML includes that Windows-side repair unless the corrected project is copied
-back into this repository.
+SMTP practice was added with `UiPath.Mail.Activities`. The Integration Service connection is configured
+on Windows for `wa.tanmay1@gmail.com`, and practice mail was successfully delivered to
+`anandtanmay474@gmail.com`. If the SMTP activity appears as `ErrorActivity` after synchronization,
+remove and recreate it in Studio so Studio writes valid connection metadata. The repository practice
+path deliberately leaves `AlertSent=False` and is not production alerting.
 
 ## State-transition alert rules
 
@@ -285,10 +285,11 @@ Optionally require two consecutive failed checks before declaring an outage. Dur
 
 ## Alert destination
 
-The user selected email, preferably Gmail. The exact supported Gmail activity or connection
-method must be confirmed in UiPath Studio at the start of Phase 4.
+SMTP connectivity practice is complete using the UiPath Integration Service Mail/SMTP connection.
+The connected sender is `wa.tanmay1@gmail.com`; the practice recipient is `anandtanmay474@gmail.com`.
+Proper transition-based alert delivery still requires Phase 4 implementation and Windows testing.
 
-Before implementing alerts:
+For the remaining proper-alert implementation:
 
 1. Inspect the mail activities available in UiPath Studio Community `2026.0.200 STS`.
 2. Choose a supported secure Gmail connection method.
@@ -314,7 +315,7 @@ The Robot currently produces a unique per-run CSV log with:
 TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId
 ```
 
-Until Phase 4 is implemented, `AlertSent` remains `False`; `TransitionAction` records values
+During SMTP practice, `AlertSent` remains `False`; proper Phase 4 implementation must set it only after successful delivery; `TransitionAction` records values
 such as `WarningPending`, `CriticalPending`, `CriticalEscalationPending`, and
 `RecoveryPending`.
 
@@ -329,7 +330,7 @@ The current trace summary shows:
 - Average response time per service
 - First and last incident timestamps
 
-Phase 4 will turn the transition results into real Gmail messages and polish the final report
+Phase 4 must turn the transition results into proper Gmail messages and polish the final report
 into a presentation-ready artifact.
 
 ## Final demonstration sequence
@@ -383,11 +384,15 @@ Status: **Complete and tested from Windows.**
 
 ### Phase 4 — Add alerts and reporting
 
-Status: **Not started; waiting for explicit user approval.**
+Status: **SMTP practice complete; proper alert implementation not started.**
 
 - Configure Gmail securely without embedding credentials in the workflow.
+- Remove the temporary SMTP practice branch and practice-only wording.
 - Connect existing transition values to warning, critical, escalation, and recovery emails.
+- Send recovery mail for both Degraded → Healthy and Down → Healthy.
+- Set `AlertSent` from the actual SMTP send result; leave it False when sending fails.
 - Preserve the existing duplicate suppression for unchanged unhealthy states.
+- Catch SMTP failures so monitoring continues.
 - Include service, endpoint, previous/current state, severity, UTC timestamp, HTTP status or
   exception, reason, and Run ID in each message.
 - Generate a presentation-ready final report from the existing counters and per-service averages.
@@ -415,7 +420,15 @@ Status: **Not started; waiting for explicit user approval.**
 
 ## Next authorized task
 
-Wait for the user's explicit Phase 4 go-ahead. Then inspect the mail activities and secure
-connection choices visible in the user's UiPath Studio installation before editing the workflow.
-Do not deploy another container, expose a control API, modify unrelated homelab services, or
-store Gmail credentials in project files.
+The next authorized task is to remove the temporary SMTP practice path and implement proper
+transition-based alerts. Verify the activity in UiPath Studio, run Analyze File, and test warning,
+critical, escalation, recovery, duplicate suppression, and SMTP failure handling. Do not deploy
+another container, expose a control API, modify unrelated homelab services, or store Gmail
+credentials in project files.
+
+## SMTP practice record
+
+SMTP was tested successfully from UiPath Studio. The Integration Service connection authenticates as
+`wa.tanmay1@gmail.com` and sends practice mail to `anandtanmay474@gmail.com`. The current practice
+branch is temporary: it does not update `AlertSent` and must be replaced by proper transition-based
+alerting before Phase 4 can be marked complete.

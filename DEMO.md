@@ -87,7 +87,7 @@ When UiPath finishes, highlight:
 
 Finish with:
 
-> Phases 1–3 and the visual presentation layer are complete. Phase 4 will add secure Gmail alerts and a presentation-ready incident report.
+> Phases 1–3 and the visual presentation layer are complete. SMTP connectivity has been practiced successfully; Phase 4 proper alerting and reporting remain in progress.
 
 ## Action schedule
 
@@ -108,3 +108,13 @@ ALL GREEN → BETA YELLOW → GAMMA RED → ALL GREEN
 ## Backup
 
 Before presenting, record one successful run and retain screenshots of the Healthy, Degraded, Down, and Recovered states, plus one previous CSV log and final UiPath summary.
+
+## SMTP practice test
+
+The temporary SMTP practice path uses the UiPath Integration Service connection for
+`wa.tanmay1@gmail.com` and sends to `anandtanmay474@gmail.com`.
+
+To test it, begin with all services healthy, start UiPath, allow the first cycle to establish
+Healthy state, then degrade beta. A meaningful transition should produce a practice email. Recover
+beta to test the recovery transition. Repeated unchanged states should not send duplicate messages.
+The current CSV still records `AlertSent=False`; this is not the final Phase 4 alert behavior.
