@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="HealthMonitor" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uwah="clr-namespace:UiPath.Web.Activities.Http;assembly=UiPath.Web.Activities" xmlns:uwahm="clr-namespace:UiPath.Web.Activities.Http.Models;assembly=UiPath.Web.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="HealthMonitor" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umsa="clr-namespace:UiPath.Mail.SMTP.Activities;assembly=UiPath.Mail.Activities" xmlns:uwah="clr-namespace:UiPath.Web.Activities.Http;assembly=UiPath.Web.Activities" xmlns:uwahm="clr-namespace:UiPath.Web.Activities.Http.Models;assembly=UiPath.Web.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -133,6 +133,7 @@
       <Variable x:TypeArguments="x:Double" Name="pollIntervalSeconds" />
       <Variable x:TypeArguments="s:DateTime" Name="requestStartedUtc" />
       <Variable x:TypeArguments="x:Boolean" Name="alertRequired" />
+      <Variable x:TypeArguments="x:Boolean" Name="smtpPracticeMode" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -479,7 +480,36 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Boolean">[transitionAction.EndsWith("Pending", StringComparison.Ordinal)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Increment Total Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_24">
+                <Assign DisplayName="Enable SMTP Practice Mode" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_46">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Boolean">[smtpPracticeMode]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[alertRequired AndAlso smtpPracticeMode]" DisplayName="Send SMTP Practice Notification" sap:VirtualizedContainerService.HintSize="488,1400">
+      <If.Then>
+        <TryCatch DisplayName="SMTP Practice Send" sap:VirtualizedContainerService.HintSize="484,1180">
+          <TryCatch.Try>
+            <Sequence DisplayName="Send SMTP Practice Email" sap:VirtualizedContainerService.HintSize="450,900">
+              <umsa:SendMail Connection="{x:Null}" To="anandtanmay474@gmail.com" Subject="[&quot;[UiPath SMTP Practice] &quot; &amp; serviceName &amp; &quot; [&quot; &amp; currentState &amp; &quot;]&quot;]" Body="[&quot;SMTP practice notification&quot; &amp; Environment.NewLine &amp; &quot;Service: &quot; &amp; serviceName &amp; Environment.NewLine &amp; &quot;Previous state: &quot; &amp; previousState &amp; Environment.NewLine &amp; &quot;Current state: &quot; &amp; currentState &amp; Environment.NewLine &amp; &quot;HTTP status: &quot; &amp; httpStatus.ToString &amp; Environment.NewLine &amp; &quot;Reason: &quot; &amp; reason &amp; Environment.NewLine &amp; &quot;Transition: &quot; &amp; transitionAction &amp; Environment.NewLine &amp; &quot;Timestamp UTC: &quot; &amp; timestampUtc &amp; Environment.NewLine &amp; &quot;Run ID: &quot; &amp; runId]" DisplayName="Send SMTP Practice Email" />
+            </Sequence>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_2">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="smtpException" />
+                </ActivityAction.Argument>
+                <WriteLine DisplayName="Write SMTP Practice Failure" Text="[&quot;SMTP practice failed for &quot; &amp; serviceName &amp; &quot;: &quot; &amp; smtpException.Message]" />
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+    </If>
+    <Assign DisplayName="Increment Total Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_24">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[totalChecks]</OutArgument>
                   </Assign.To>
