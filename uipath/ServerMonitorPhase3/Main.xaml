@@ -108,10 +108,16 @@
       <AssemblyReference>UiPath.Mail</AssemblyReference>
       <AssemblyReference>System.Net.Mail</AssemblyReference>
       <AssemblyReference>UiPath.Mail.Activities.Design</AssemblyReference>
+      <AssemblyReference>System.Memory.Data</AssemblyReference>
+      <AssemblyReference>System.CodeDom</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic.Core</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic.Forms</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Homelab Health Monitor - Phase 3" sap:VirtualizedContainerService.HintSize="854.6666666666666,12418" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Homelab Health Monitor - Phase 3" sap:VirtualizedContainerService.HintSize="854.6666666666666,13308" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="alertBody" />
+      <Variable x:TypeArguments="x:String" Name="alertSubject" />
       <Variable x:TypeArguments="s:String[]" Name="serviceDefinitions" />
       <Variable x:TypeArguments="scg:Dictionary(x:String, x:String)" Name="previousStates" />
       <Variable x:TypeArguments="scg:Dictionary(x:String, x:Double)" Name="responseTimeTotals" />
@@ -243,21 +249,21 @@
     </Assign>
     <ui:AppendLine File="{x:Null}" DisplayName="Write CSV Header" FileName="[logPath]" sap:VirtualizedContainerService.HintSize="604.6666666666666,168.66666666666666" sap2010:WorkflowViewState.IdRef="AppendLine_1" Text="TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId" UseDefaultEncoding="False" />
     <WriteLine DisplayName="Write Run Start" sap:VirtualizedContainerService.HintSize="604.6666666666666,124" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Monitor started | RunId=&quot; &amp; runId &amp; &quot; | Cycles=&quot; &amp; maxCycles.ToString &amp; &quot; | IntervalSeconds=&quot; &amp; pollIntervalSeconds.ToString]" />
-    <While DisplayName="Monitoring Loop" sap:VirtualizedContainerService.HintSize="604.6666666666666,9989.333333333334" sap2010:WorkflowViewState.IdRef="While_1" Condition="[currentCycle &lt; maxCycles]">
-      <Sequence DisplayName="Monitoring Cycle" sap:VirtualizedContainerService.HintSize="558,9792" sap2010:WorkflowViewState.IdRef="Sequence_5">
+    <While DisplayName="Monitoring Loop" sap:VirtualizedContainerService.HintSize="604.6666666666666,10879.333333333334" sap2010:WorkflowViewState.IdRef="While_1" Condition="[currentCycle &lt; maxCycles]">
+      <Sequence DisplayName="Monitoring Cycle" sap:VirtualizedContainerService.HintSize="558,10682" sap2010:WorkflowViewState.IdRef="Sequence_5">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
         <WriteLine DisplayName="Write Cycle Start" sap:VirtualizedContainerService.HintSize="524,124" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="[&quot;Starting cycle &quot; &amp; (currentCycle + 1).ToString &amp; &quot; of &quot; &amp; maxCycles.ToString]" />
-        <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Monitored Service" sap:VirtualizedContainerService.HintSize="524,9166.666666666666" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[serviceDefinitions]">
+        <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Monitored Service" sap:VirtualizedContainerService.HintSize="524,10056.666666666666" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[serviceDefinitions]">
           <ui:ForEach.Body>
             <ActivityAction x:TypeArguments="x:String">
               <ActivityAction.Argument>
                 <DelegateInArgument x:TypeArguments="x:String" Name="serviceDefinition" />
               </ActivityAction.Argument>
-              <Sequence DisplayName="Check Current Service" sap:VirtualizedContainerService.HintSize="522,9034.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_2">
+              <Sequence DisplayName="Check Current Service" sap:VirtualizedContainerService.HintSize="522,9924.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_2">
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -509,17 +515,41 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <If Condition="[alertRequired]" DisplayName="Send Transition Alert" sap:VirtualizedContainerService.HintSize="488,945.3333333333334" sap2010:WorkflowViewState.IdRef="If_1">
+                <If Condition="[alertRequired]" DisplayName="Send Transition Alert" sap:VirtualizedContainerService.HintSize="488,1729.3333333333333" sap2010:WorkflowViewState.IdRef="If_1">
                   <If.Then>
-                    <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="452,692.6666666666666" sap2010:WorkflowViewState.IdRef="TryCatch_4">
+                    <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="452,1476.6666666666667" sap2010:WorkflowViewState.IdRef="TryCatch_4">
                       <TryCatch.Try>
-                        <Sequence DisplayName="Send Alert" sap:VirtualizedContainerService.HintSize="450,402" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                        <Sequence DisplayName="Send Alert" sap:VirtualizedContainerService.HintSize="450,925.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_15">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" Email="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" Port="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="[alertSent]" SecurePassword="{x:Null}" Server="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="[&quot;UiPath Homelab Health Monitor Alert&quot; &amp; vbCrLf &amp; &quot;Severity: &quot; &amp; alertSeverity &amp; vbCrLf &amp; &quot;Service: &quot; &amp; serviceName &amp; vbCrLf &amp; &quot;Transition: &quot; &amp; previousState &amp; &quot; → &quot; &amp; currentState &amp; vbCrLf &amp; &quot;TimestampUtc: &quot; &amp; timestampUtc &amp; vbCrLf &amp; &quot;Endpoint: &quot; &amp; endpoint &amp; vbCrLf &amp; &quot;HTTP status: &quot; &amp; httpStatus.ToString &amp; vbCrLf &amp; &quot;Reason: &quot; &amp; reason &amp; vbCrLf &amp; &quot;Run ID: &quot; &amp; runId]" ConnectionId="ba538c0f-f5ff-4c36-be88-e37fbf25a09a" ConnectionMode="IntegrationService" CreatedAfterSolutionSupport="True" DisplayName="Send Transition Alert" EnableSSL="True" sap:VirtualizedContainerService.HintSize="416,342" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" SecureConnection="Auto" Subject="[&quot;[&quot; &amp; alertSeverity &amp; &quot;] &quot; &amp; serviceName &amp; &quot; &quot; &amp; currentState &amp; &quot; (&quot; &amp; transitionAction &amp; &quot;)&quot;]" To="anandtanmay474@gmail.com" UseISConnection="True" UseRichTextEditor="True">
+                          <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_49">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:String">[alertSubject]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String">["[" &amp; alertSeverity &amp; "] " &amp; serviceName &amp; " " &amp; currentState &amp; " (" &amp; transitionAction &amp; ")"]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_50">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:String">[alertBody]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String" xml:space="preserve">["UiPath Homelab Health Monitor Alert" &amp; vbCrLf &amp;
+                 "Severity: " &amp; alertSeverity &amp; vbCrLf &amp;
+                 "Service: " &amp; serviceName &amp; vbCrLf &amp;
+                 "Transition: " &amp; previousState &amp; " → " &amp; currentState &amp; vbCrLf &amp;
+                 "TimestampUtc: " &amp; timestampUtc &amp; vbCrLf &amp;
+                 "Endpoint: " &amp; endpoint &amp; vbCrLf &amp;
+                 "HTTP status: " &amp; httpStatus.ToString &amp; vbCrLf &amp;
+                 "Reason: " &amp; reason &amp; vbCrLf &amp;
+                 "Run ID: " &amp; runId]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <ui:SendMail Bcc="{x:Null}" ContinueOnError="{x:Null}" Email="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" Port="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" Server="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="[alertBody]" Cc="vineethudupa22@gmail.com" ConnectionId="ba538c0f-f5ff-4c36-be88-e37fbf25a09a" ConnectionMode="IntegrationService" CreatedAfterSolutionSupport="True" DisplayName="Send Transition Alert" EnableSSL="True" sap:VirtualizedContainerService.HintSize="416,344.6666666666667" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" SecureConnection="Auto" Subject="[alertSubject]" To="anandtanmay474@gmail.com" UseISConnection="True" UseRichTextEditor="True">
                             <ui:SendMail.AttachmentsBackup>
                               <usau:BackupSlot x:TypeArguments="umame:AttachmentInputMode" StoredValue="Existing">
                                 <usau:BackupSlot.BackupValues>
@@ -538,6 +568,14 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                               <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
                             </ui:SendMail.Files>
                           </ui:SendMail>
+                          <Assign sap:VirtualizedContainerService.HintSize="416,167.33333333333334" sap2010:WorkflowViewState.IdRef="Assign_51">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Boolean">[alertSent]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+                            </Assign.Value>
+                          </Assign>
                         </Sequence>
                       </TryCatch.Try>
                       <TryCatch.Catches>
@@ -546,7 +584,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                             <ActivityAction.Argument>
                               <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
                             </ActivityAction.Argument>
-                            <Sequence DisplayName="Catch" sap:VirtualizedContainerService.HintSize="450,90.66666666666667" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                            <Sequence DisplayName="Catch" sap:VirtualizedContainerService.HintSize="450,351.3333333333333" sap2010:WorkflowViewState.IdRef="Sequence_16">
                               <sap:WorkflowViewStateService.ViewState>
                                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -560,7 +598,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                                   <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
                                 </Assign.Value>
                               </Assign>
-                              <WriteLine DisplayName="Log Alert Failure" sap:VirtualizedContainerService.HintSize="416,124" Text="[&quot;ALERT SEND FAILED | Service=&quot; &amp; serviceName &amp; &quot; | Severity=&quot; &amp; alertSeverity &amp; &quot; | Error=&quot; &amp; exception.GetType.Name &amp; &quot;: &quot; &amp; exception.Message]" />
+                              <WriteLine DisplayName="Log Alert Failure" sap:VirtualizedContainerService.HintSize="416,114.66666666666667" sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="[&quot;ALERT SEND FAILED | Service=&quot; &amp; serviceName &amp; &quot; | Severity=&quot; &amp; alertSeverity &amp; &quot; | Error=&quot; &amp; exception.GetType.Name &amp; &quot;: &quot; &amp; exception.Message]" />
                             </Sequence>
                           </ActivityAction>
                         </Catch>
@@ -625,7 +663,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[recoveryCount + If(transitionAction = "RecoveryPending", 1, 0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <If Condition="[transitionAction = &quot;WarningPending&quot; OrElse transitionAction = &quot;CriticalPending&quot; OrElse transitionAction = &quot;CriticalEscalationPending&quot;]" DisplayName="Record Incident Timestamps" sap:VirtualizedContainerService.HintSize="488,855.3333333333334" sap2010:WorkflowViewState.IdRef="If_3">
+                <If Condition="[transitionAction = &quot;WarningPending&quot; OrElse transitionAction = &quot;CriticalPending&quot; OrElse transitionAction = &quot;CriticalEscalationPending&quot;]" DisplayName="Record Incident Timestamps" sap:VirtualizedContainerService.HintSize="488,784.6666666666666" sap2010:WorkflowViewState.IdRef="If_3">
                   <If.Then>
                     <Sequence DisplayName="Update Incident Timestamps" sap:VirtualizedContainerService.HintSize="486,624.6666666666666" sap2010:WorkflowViewState.IdRef="Sequence_3">
                       <sap:WorkflowViewStateService.ViewState>
@@ -655,6 +693,9 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                       </Assign>
                     </Sequence>
                   </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap2010:WorkflowViewState.IdRef="Sequence_18" />
+                  </If.Else>
                 </If>
                 <If Condition="[httpStatus &gt; 0]" DisplayName="Accumulate HTTP Response Time" sap:VirtualizedContainerService.HintSize="488,634.6666666666666" sap2010:WorkflowViewState.IdRef="If_4">
                   <If.Then>
