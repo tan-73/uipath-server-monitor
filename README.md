@@ -4,8 +4,8 @@ A college RPA project demonstrating a UiPath Robot on Windows monitoring an isol
 
 The working Robot classifies services as **Healthy**, **Degraded**, or **Down**, tracks state
 transitions, suppresses duplicate incident transitions, writes structured monitoring logs, and
-generates a run summary without receiving access to Docker or the Ubuntu host. SMTP connectivity
-has been tested from UiPath, but proper production alerting remains in Phase 4.
+generates a run summary, and sends transition-based SMTP alerts without receiving access to Docker
+or the Ubuntu host.
 
 ## Current status
 
@@ -13,8 +13,8 @@ has been tested from UiPath, but proper production alerting remains in Phase 4.
 - Phase 2 — Isolated server demo stack: complete
 - Phase 3 — UiPath monitor: complete
 - Presentation CLI — interactive dashboard: complete
-- SMTP practice connection: complete
-- Phase 4 — Proper email alerts and reporting: not started
+- SMTP implementation: complete in the smtp-implement branch
+- Phase 4 — Proper email alerts and reporting: implemented; Windows validation pending
 - Phase 5 — Rehearsal and final documentation: not started
 
 ## Architecture
@@ -208,8 +208,10 @@ network.
 9. Press `R` to restore the healthy baseline.
 10. After the Robot produces its final summary, press `Q` to exit the dashboard.
 
-SMTP practice has been tested with the UiPath Integration Service connection. Phase 4 will replace
-the temporary practice path with proper warning, critical, escalation, and recovery alerts.
+The workflow uses the UiPath Integration Service connection for warning, critical, escalation, and
+recovery alerts. The send result is written to AlertSent; SMTP failures are logged and do not stop
+the monitoring loop. Run Analyze File and the Windows transition tests before marking Phase 4
+complete.
 
 ## Manual endpoint checks
 
@@ -279,13 +281,13 @@ Do not operate on unrelated containers during the demonstration.
 
 ## Next phase
 
-Remove the temporary SMTP practice path and implement proper transition-based SMTP alerts and reporting. Gmail credentials must use a secure
-Windows/UiPath connection or credential store and must never be placed in XAML, logs, screenshots,
-or repository files.
+Run UiPath Analyze File and the Windows transition tests for the SMTP implementation. Gmail
+credentials must use a secure Windows/UiPath connection or credential store and must never be
+placed in XAML, logs, screenshots, or repository files.
 
-## SMTP practice completed
+## SMTP implementation
 
-The temporary SMTP practice path was added through `UiPath.Mail.Activities`. It uses the UiPath
-Integration Service connection for `wa.tanmay1@gmail.com` and sends practice messages to
-`anandtanmay474@gmail.com`. SMTP delivery was confirmed in UiPath. The CSV intentionally still
-reports `AlertSent=False`; this practice path must not be treated as completed Phase 4 alerting.
+The workflow uses UiPath.Mail.Activities with the configured UiPath Integration Service
+connection. It sends transition-specific messages and records the activity result in AlertSent.
+The connection remains machine/runtime configuration; no password or token is stored in the
+project.

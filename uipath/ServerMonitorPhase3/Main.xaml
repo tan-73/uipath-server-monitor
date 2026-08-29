@@ -145,7 +145,8 @@
       <Variable x:TypeArguments="x:Double" Name="pollIntervalSeconds" />
       <Variable x:TypeArguments="s:DateTime" Name="requestStartedUtc" />
       <Variable x:TypeArguments="x:Boolean" Name="alertRequired" />
-      <Variable x:TypeArguments="x:Boolean" Name="smtpPracticeMode" />
+      <Variable x:TypeArguments="x:Boolean" Name="alertSent" />
+      <Variable x:TypeArguments="x:String" Name="alertSeverity" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -492,25 +493,33 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Boolean">[transitionAction.EndsWith("Pending", StringComparison.Ordinal)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Enable SMTP Practice Mode" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_46">
+                <Assign DisplayName="Determine Alert Severity" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_46">
                   <Assign.To>
-                    <OutArgument x:TypeArguments="x:Boolean">[smtpPracticeMode]</OutArgument>
+                    <OutArgument x:TypeArguments="x:String">[alertSeverity]</OutArgument>
                   </Assign.To>
                   <Assign.Value>
-                    <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+                    <InArgument x:TypeArguments="x:String">[If(transitionAction = "WarningPending", "WARNING", If(transitionAction = "RecoveryPending", "RECOVERY", "CRITICAL"))]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <If Condition="[alertRequired AndAlso smtpPracticeMode]" DisplayName="Send SMTP Practice Notification" sap:VirtualizedContainerService.HintSize="488,945.3333333333334" sap2010:WorkflowViewState.IdRef="If_1">
+                <Assign DisplayName="Reset Alert Result" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_47">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Boolean">[alertSent]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <If Condition="[alertRequired]" DisplayName="Send Transition Alert" sap:VirtualizedContainerService.HintSize="488,945.3333333333334" sap2010:WorkflowViewState.IdRef="If_1">
                   <If.Then>
                     <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="452,692.6666666666666" sap2010:WorkflowViewState.IdRef="TryCatch_4">
                       <TryCatch.Try>
-                        <Sequence DisplayName="Try" sap:VirtualizedContainerService.HintSize="450,402" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                        <Sequence DisplayName="Send Alert" sap:VirtualizedContainerService.HintSize="450,402" sap2010:WorkflowViewState.IdRef="Sequence_15">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" Email="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" Port="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="{x:Null}" SecurePassword="{x:Null}" Server="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="&quot;This is a test email from uipath&quot;" ConnectionId="ba538c0f-f5ff-4c36-be88-e37fbf25a09a" ConnectionMode="IntegrationService" CreatedAfterSolutionSupport="True" DisplayName="Send SMTP Email" EnableSSL="True" sap:VirtualizedContainerService.HintSize="416,342" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" SecureConnection="Auto" Subject="Test email" To="anandtanmay474@gmail.com" UseISConnection="True" UseRichTextEditor="True">
+                          <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" Email="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" Port="{x:Null}" ReplyTo="{x:Null}" ResourceAttachmentList="{x:Null}" ResourceAttachments="{x:Null}" Result="[alertSent]" SecurePassword="{x:Null}" Server="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Action="Forward" AttachmentInputMode="Existing" Body="[&quot;UiPath Homelab Health Monitor Alert&quot; &amp; vbCrLf &amp; &quot;Severity: &quot; &amp; alertSeverity &amp; vbCrLf &amp; &quot;Service: &quot; &amp; serviceName &amp; vbCrLf &amp; &quot;Transition: &quot; &amp; previousState &amp; &quot; → &quot; &amp; currentState &amp; vbCrLf &amp; &quot;TimestampUtc: &quot; &amp; timestampUtc &amp; vbCrLf &amp; &quot;Endpoint: &quot; &amp; endpoint &amp; vbCrLf &amp; &quot;HTTP status: &quot; &amp; httpStatus.ToString &amp; vbCrLf &amp; &quot;Reason: &quot; &amp; reason &amp; vbCrLf &amp; &quot;Run ID: &quot; &amp; runId]" ConnectionId="ba538c0f-f5ff-4c36-be88-e37fbf25a09a" ConnectionMode="IntegrationService" CreatedAfterSolutionSupport="True" DisplayName="Send Transition Alert" EnableSSL="True" sap:VirtualizedContainerService.HintSize="416,342" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" SecureConnection="Auto" Subject="[&quot;[&quot; &amp; alertSeverity &amp; &quot;] &quot; &amp; serviceName &amp; &quot; &quot; &amp; currentState &amp; &quot; (&quot; &amp; transitionAction &amp; &quot;)&quot;]" To="anandtanmay474@gmail.com" UseISConnection="True" UseRichTextEditor="True">
                             <ui:SendMail.AttachmentsBackup>
                               <usau:BackupSlot x:TypeArguments="umame:AttachmentInputMode" StoredValue="Existing">
                                 <usau:BackupSlot.BackupValues>
@@ -543,6 +552,15 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
+                              <Assign DisplayName="Record Alert Failure" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_48">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Boolean">[alertSent]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <WriteLine DisplayName="Log Alert Failure" sap:VirtualizedContainerService.HintSize="416,124" Text="[&quot;ALERT SEND FAILED | Service=&quot; &amp; serviceName &amp; &quot; | Severity=&quot; &amp; alertSeverity &amp; &quot; | Error=&quot; &amp; exception.GetType.Name &amp; &quot;: &quot; &amp; exception.Message]" />
                             </Sequence>
                           </ActivityAction>
                         </Catch>
@@ -672,7 +690,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                   <Assign.Value>
                     <InArgument x:TypeArguments="x:String" xml:space="preserve">[timestampUtc &amp; "," &amp; serviceName &amp; "," &amp; previousState &amp; "," &amp; currentState &amp; "," &amp;
 httpStatus.ToString &amp; "," &amp; responseTimeMs.ToString &amp; "," &amp;
-reason.Replace(",", ";").Replace(vbCr, " ").Replace(vbLf, " ") &amp; ",False," &amp;
+reason.Replace(",", ";").Replace(vbCr, " ").Replace(vbLf, " ") &amp; "," &amp; alertSent.ToString &amp; "," &amp;
 transitionAction &amp; "," &amp; runId]</InArgument>
                   </Assign.Value>
                 </Assign>

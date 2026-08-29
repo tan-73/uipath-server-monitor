@@ -87,7 +87,8 @@ When UiPath finishes, highlight:
 
 Finish with:
 
-> Phases 1–3 and the visual presentation layer are complete. SMTP connectivity has been practiced successfully; Phase 4 proper alerting and reporting remain in progress.
+> Phases 1–3 and the visual presentation layer are complete. Transition-based SMTP alerting is
+> implemented; Windows validation remains before Phase 4 is closed.
 
 ## Action schedule
 
@@ -109,12 +110,10 @@ ALL GREEN → BETA YELLOW → GAMMA RED → ALL GREEN
 
 Before presenting, record one successful run and retain screenshots of the Healthy, Degraded, Down, and Recovered states, plus one previous CSV log and final UiPath summary.
 
-## SMTP practice test
+## SMTP transition-alert test
 
-The temporary SMTP practice path uses the UiPath Integration Service connection for
-`wa.tanmay1@gmail.com` and sends to `anandtanmay474@gmail.com`.
-
-To test it, begin with all services healthy, start UiPath, allow the first cycle to establish
-Healthy state, then degrade beta. A meaningful transition should produce a practice email. Recover
-beta to test the recovery transition. Repeated unchanged states should not send duplicate messages.
-The current CSV still records `AlertSent=False`; this is not the final Phase 4 alert behavior.
+Begin with all services healthy and start UiPath. After the first cycle establishes Healthy state,
+degrade beta and verify a WARNING message with Healthy → Degraded. Leave beta degraded for one
+more cycle and verify no duplicate message. Recover beta and verify a RECOVERY message with
+Degraded → Healthy. Repeat with gamma stopped and started to verify CRITICAL and recovery
+messages. Confirm the CSV AlertSent value reflects the actual send result.
