@@ -14,7 +14,7 @@ or the Ubuntu host.
 - Phase 3 — UiPath monitor: complete
 - Presentation CLI — interactive dashboard: complete
 - SMTP implementation: complete in the smtp-implement branch
-- Phase 4 — Proper email alerts and reporting: implemented; Windows validation pending
+- Phase 4 — Proper email alerts and reporting: critical outage alert verified; final validation pending
 - Phase 5 — Rehearsal and final documentation: not started
 
 ## Architecture
@@ -212,6 +212,10 @@ The workflow uses the UiPath Integration Service connection for warning, critica
 recovery alerts. The send result is written to AlertSent; SMTP failures are logged and do not stop
 the monitoring loop. Run Analyze File and the Windows transition tests before marking Phase 4
 complete.
+
+Runtime progress: a gamma hard-outage test has successfully produced a CRITICAL email for
+Healthy → Down, including HTTP status 0, the connection-refused reason, the endpoint, timestamp,
+and Run ID. Recovery, duplicate suppression, warning, and SMTP-failure tests remain to be closed.
 
 ## Manual endpoint checks
 

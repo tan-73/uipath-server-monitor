@@ -2,7 +2,8 @@
 
 ## Status
 
-Updated 2026-08-29 after the interactive presentation dashboard was tested successfully.
+Updated 2026-08-29 after the interactive presentation dashboard and gamma critical alert were
+tested successfully.
 
 | Work item | Status |
 |---|---|
@@ -10,13 +11,14 @@ Updated 2026-08-29 after the interactive presentation dashboard was tested succe
 | Phase 2 — isolated Docker demo stack | Complete |
 | Phase 3 — UiPath monitor | Complete and tested from Windows |
 | Interactive presentation CLI | Complete and user-tested |
-| SMTP implementation | Implemented on smtp-implement; Windows validation pending |
-| Phase 4 — Gmail alerts and final reporting | Implemented; Analyze File and Windows runtime validation pending |
+| SMTP implementation | Implemented on smtp-implement; critical outage verified from Windows |
+| Phase 4 — Gmail alerts and final reporting | Partially validated; Analyze File and remaining runtime tests pending |
 | Phase 5 — rehearsal and final documentation | Not started |
 
 This document remains the authoritative handoff for continuing the build. The SMTP implementation
-is complete in the branch, but Phase 4 cannot be closed until Analyze File and Windows runtime
-tests pass. Preserve the existing demo behavior and all unrelated homelab services.
+is complete in the branch, and the critical hard-outage path has been verified from Windows. Phase 4
+cannot be closed until Analyze File and the remaining Windows runtime tests pass. Preserve the
+existing demo behavior and all unrelated homelab services.
 
 ## Project objective
 
@@ -264,9 +266,21 @@ transition on the following cycle.
 
 SMTP alerts use UiPath.Mail.Activities and the configured Integration Service connection. Alert
 subjects and bodies are built from the service, transition, severity, endpoint, HTTP status,
-reason, timestamp, and Run ID. The activity result populates AlertSent; a caught send exception
-sets it to False and monitoring continues. If the activity appears as ErrorActivity after
-synchronization, remove and recreate it in Studio so Studio writes valid connection metadata.
+reason, timestamp, and Run ID. Successful activity completion sets AlertSent to True; a caught
+send exception sets it to False and monitoring continues. If the activity appears as ErrorActivity
+after synchronization, remove and recreate it in Studio so Studio writes valid connection metadata.
+
+### Runtime validation record
+
+Verified from Windows on 2026-08-29:
+
+- Stopping demo-gamma produced a CRITICAL alert.
+- The alert recorded Healthy → Down.
+- HTTP status was 0 because no HTTP response existed.
+- The connection-refused reason, endpoint, UTC timestamp, and Run ID were included.
+
+Still required before closing Phase 4: warning delivery, duplicate suppression, both recovery
+transitions, SMTP failure continuation, and UiPath Analyze File.
 
 ## State-transition alert rules
 
@@ -398,7 +412,8 @@ Status: **Implemented on smtp-implement; Windows validation pending.**
 - [x] Include service, endpoint, previous/current state, severity, UTC timestamp, HTTP status or
   exception, reason, and Run ID in each message.
 - [x] Generate the existing presentation-ready summary from counters and per-service averages.
-- [ ] Run Analyze File and Windows runtime tests for warning, hard-down, escalation, recovery,
+- [x] Verify the hard-down critical alert from Windows.
+- [ ] Run Analyze File and the remaining Windows runtime tests for warning, escalation, recovery,
   duplicate suppression, and SMTP failure handling.
 
 ### Phase 5 — Rehearse and document

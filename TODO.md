@@ -14,5 +14,7 @@ later phases -
 
 - SMTP connectivity practice is complete using the UiPath Integration Service connection.
 - SMTP transition alerts are implemented on the smtp-implement branch.
+- Gamma hard-outage CRITICAL alert has been verified from Windows, including connection-refused
+  details and Run ID.
 - Run Analyze File and Windows runtime tests for warning, critical, escalation, recovery,
   duplicate suppression, and SMTP failure handling before closing Phase 4.

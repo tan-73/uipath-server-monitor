@@ -88,7 +88,8 @@ When UiPath finishes, highlight:
 Finish with:
 
 > Phases 1–3 and the visual presentation layer are complete. Transition-based SMTP alerting is
-> implemented; Windows validation remains before Phase 4 is closed.
+> implemented, and the gamma critical alert has been verified. Warning, recovery, duplicate
+> suppression, and failure-handling tests remain before Phase 4 is closed.
 
 ## Action schedule
 
@@ -117,3 +118,6 @@ degrade beta and verify a WARNING message with Healthy → Degraded. Leave beta 
 more cycle and verify no duplicate message. Recover beta and verify a RECOVERY message with
 Degraded → Healthy. Repeat with gamma stopped and started to verify CRITICAL and recovery
 messages. Confirm the CSV AlertSent value reflects the actual send result.
+
+The gamma hard-outage path has been verified: stopping gamma generated a CRITICAL email containing
+Healthy → Down, HTTP status 0, the connection-refused reason, endpoint, UTC timestamp, and Run ID.
