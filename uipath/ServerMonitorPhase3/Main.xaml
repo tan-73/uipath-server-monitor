@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="HealthMonitor" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umae="clr-namespace:UiPath.Mail.Activities.Enums;assembly=UiPath.Mail.Activities" xmlns:umame="clr-namespace:UiPath.MicrosoftOffice365.Activities.Mail.Enums;assembly=UiPath.Mail.Activities" xmlns:usau="clr-namespace:UiPath.Shared.Activities.Utils;assembly=UiPath.Mail.Activities" xmlns:uwah="clr-namespace:UiPath.Web.Activities.Http;assembly=UiPath.Web.Activities" xmlns:uwahm="clr-namespace:UiPath.Web.Activities.Http.Models;assembly=UiPath.Web.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="HealthMonitor" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:stt="clr-namespace:System.Threading.Tasks;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umae="clr-namespace:UiPath.Mail.Activities.Enums;assembly=UiPath.Mail.Activities" xmlns:umame="clr-namespace:UiPath.MicrosoftOffice365.Activities.Mail.Enums;assembly=UiPath.Mail.Activities" xmlns:usau="clr-namespace:UiPath.Shared.Activities.Utils;assembly=UiPath.Mail.Activities" xmlns:uwah="clr-namespace:UiPath.Web.Activities.Http;assembly=UiPath.Web.Activities" xmlns:uwahm="clr-namespace:UiPath.Web.Activities.Http.Models;assembly=UiPath.Web.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -48,6 +48,7 @@
       <x:String>UiPath.Mail.SMTP.Activities</x:String>
       <x:String>UiPath.Shared.Activities</x:String>
       <x:String>UiPath.Mail.Activities</x:String>
+      <x:String>System.Threading.Tasks</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -112,9 +113,10 @@
       <AssemblyReference>System.CodeDom</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic.Core</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic.Forms</AssemblyReference>
+      <AssemblyReference>System.Threading.Tasks.Parallel</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Homelab Health Monitor - Phase 3" sap:VirtualizedContainerService.HintSize="854.6666666666666,13308" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Homelab Health Monitor - Phase 3" sap:VirtualizedContainerService.HintSize="854.6666666666666,14432.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="alertBody" />
       <Variable x:TypeArguments="x:String" Name="alertSubject" />
@@ -159,7 +161,7 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Assign DisplayName="Initialize Service List" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <Assign DisplayName="Initialize Service List" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="s:String[]">[serviceDefinitions]</OutArgument>
       </Assign.To>
@@ -171,7 +173,7 @@
 }]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Initialize Previous States" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_2">
+    <Assign DisplayName="Initialize Previous States" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_2">
       <Assign.To>
         <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:String)">[previousStates]</OutArgument>
       </Assign.To>
@@ -183,7 +185,7 @@
 }]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Initialize Response Time Totals" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_3">
+    <Assign DisplayName="Initialize Response Time Totals" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_3">
       <Assign.To>
         <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Double)">[responseTimeTotals]</OutArgument>
       </Assign.To>
@@ -191,7 +193,7 @@
         <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Double)">[New Dictionary(Of String, Double) From {{"demo-alpha", 0.0}, {"demo-beta", 0.0}, {"demo-gamma", 0.0}}]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Initialize Response Time Counts" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_4">
+    <Assign DisplayName="Initialize Response Time Counts" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_4">
       <Assign.To>
         <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Int32)">[responseTimeCounts]</OutArgument>
       </Assign.To>
@@ -199,7 +201,7 @@
         <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Int32)">[New Dictionary(Of String, Integer) From {{"demo-alpha", 0}, {"demo-beta", 0}, {"demo-gamma", 0}}]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Set Poll Interval Seconds" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_5">
+    <Assign DisplayName="Set Poll Interval Seconds" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_5">
       <Assign.To>
         <OutArgument x:TypeArguments="x:Double">[pollIntervalSeconds]</OutArgument>
       </Assign.To>
@@ -215,7 +217,7 @@
         <InArgument x:TypeArguments="x:Int32">[6]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Create Run ID" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_7">
+    <Assign DisplayName="Create Run ID" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_7">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[runId]</OutArgument>
       </Assign.To>
@@ -223,7 +225,7 @@
         <InArgument x:TypeArguments="x:String">[Guid.NewGuid.ToString("N")]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Set Log Path" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_8">
+    <Assign DisplayName="Set Log Path" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_8">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[logPath]</OutArgument>
       </Assign.To>
@@ -231,7 +233,7 @@
         <InArgument x:TypeArguments="x:String">[Path.Combine(Environment.CurrentDirectory, "monitoring-log-" &amp; runId &amp; ".csv")]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Initialize First Incident" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_9">
+    <Assign DisplayName="Initialize First Incident" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_9">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[firstIncidentUtc]</OutArgument>
       </Assign.To>
@@ -239,7 +241,7 @@
         <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Initialize Last Incident" sap:VirtualizedContainerService.HintSize="604.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_10">
+    <Assign DisplayName="Initialize Last Incident" sap:VirtualizedContainerService.HintSize="638.6666666666666,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_10">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[lastIncidentUtc]</OutArgument>
       </Assign.To>
@@ -247,29 +249,29 @@
         <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:AppendLine File="{x:Null}" DisplayName="Write CSV Header" FileName="[logPath]" sap:VirtualizedContainerService.HintSize="604.6666666666666,168.66666666666666" sap2010:WorkflowViewState.IdRef="AppendLine_1" Text="TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId" UseDefaultEncoding="False" />
-    <WriteLine DisplayName="Write Run Start" sap:VirtualizedContainerService.HintSize="604.6666666666666,124" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Monitor started | RunId=&quot; &amp; runId &amp; &quot; | Cycles=&quot; &amp; maxCycles.ToString &amp; &quot; | IntervalSeconds=&quot; &amp; pollIntervalSeconds.ToString]" />
-    <While DisplayName="Monitoring Loop" sap:VirtualizedContainerService.HintSize="604.6666666666666,10879.333333333334" sap2010:WorkflowViewState.IdRef="While_1" Condition="[currentCycle &lt; maxCycles]">
-      <Sequence DisplayName="Monitoring Cycle" sap:VirtualizedContainerService.HintSize="558,10682" sap2010:WorkflowViewState.IdRef="Sequence_5">
+    <ui:AppendLine File="{x:Null}" DisplayName="Write CSV Header" FileName="[logPath]" sap:VirtualizedContainerService.HintSize="638.6666666666666,168.66666666666666" sap2010:WorkflowViewState.IdRef="AppendLine_1" Text="TimestampUtc,Service,PreviousState,CurrentState,HttpStatus,ResponseTimeMs,Reason,AlertSent,TransitionAction,RunId" UseDefaultEncoding="False" />
+    <WriteLine DisplayName="Write Run Start" sap:VirtualizedContainerService.HintSize="638.6666666666666,124" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Monitor started | RunId=&quot; &amp; runId &amp; &quot; | Cycles=&quot; &amp; maxCycles.ToString &amp; &quot; | IntervalSeconds=&quot; &amp; pollIntervalSeconds.ToString]" />
+    <While DisplayName="Monitoring Loop" sap:VirtualizedContainerService.HintSize="638.6666666666666,12004" sap2010:WorkflowViewState.IdRef="While_1" Condition="[currentCycle &lt; maxCycles]">
+      <Sequence DisplayName="Monitoring Cycle" sap:VirtualizedContainerService.HintSize="592,11806.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_5">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
-        <WriteLine DisplayName="Write Cycle Start" sap:VirtualizedContainerService.HintSize="524,124" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="[&quot;Starting cycle &quot; &amp; (currentCycle + 1).ToString &amp; &quot; of &quot; &amp; maxCycles.ToString]" />
-        <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Monitored Service" sap:VirtualizedContainerService.HintSize="524,10056.666666666666" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[serviceDefinitions]">
+        <WriteLine DisplayName="Write Cycle Start" sap:VirtualizedContainerService.HintSize="558,124" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="[&quot;Starting cycle &quot; &amp; (currentCycle + 1).ToString &amp; &quot; of &quot; &amp; maxCycles.ToString]" />
+        <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Monitored Service" sap:VirtualizedContainerService.HintSize="558,11181.333333333334" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[serviceDefinitions]">
           <ui:ForEach.Body>
             <ActivityAction x:TypeArguments="x:String">
               <ActivityAction.Argument>
                 <DelegateInArgument x:TypeArguments="x:String" Name="serviceDefinition" />
               </ActivityAction.Argument>
-              <Sequence DisplayName="Check Current Service" sap:VirtualizedContainerService.HintSize="522,9924.666666666666" sap2010:WorkflowViewState.IdRef="Sequence_2">
+              <Sequence DisplayName="Check Current Service" sap:VirtualizedContainerService.HintSize="556,11049.333333333334" sap2010:WorkflowViewState.IdRef="Sequence_2">
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
-                <Assign DisplayName="Extract Service Name" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_12">
+                <Assign DisplayName="Extract Service Name" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_12">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[serviceName]</OutArgument>
                   </Assign.To>
@@ -277,7 +279,7 @@
                     <InArgument x:TypeArguments="x:String">[serviceDefinition.Split("|"c)(0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Extract Service Endpoint" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_13">
+                <Assign DisplayName="Extract Service Endpoint" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_13">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[endpoint]</OutArgument>
                   </Assign.To>
@@ -285,7 +287,7 @@
                     <InArgument x:TypeArguments="x:String">[serviceDefinition.Split("|"c)(1)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Read Previous State" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_14">
+                <Assign DisplayName="Read Previous State" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_14">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[previousState]</OutArgument>
                   </Assign.To>
@@ -293,7 +295,7 @@
                     <InArgument x:TypeArguments="x:String">[previousStates(serviceName)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Reset Current State" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_15">
+                <Assign DisplayName="Reset Current State" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_15">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[currentState]</OutArgument>
                   </Assign.To>
@@ -301,7 +303,7 @@
                     <InArgument x:TypeArguments="x:String">Unknown</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Reset Reported State" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_16">
+                <Assign DisplayName="Reset Reported State" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_16">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[reportedState]</OutArgument>
                   </Assign.To>
@@ -309,7 +311,7 @@
                     <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Reset HTTP Status" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_17">
+                <Assign DisplayName="Reset HTTP Status" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_17">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[httpStatus]</OutArgument>
                   </Assign.To>
@@ -317,7 +319,7 @@
                     <InArgument x:TypeArguments="x:Int32">0</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Reset Response Body" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_18">
+                <Assign DisplayName="Reset Response Body" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_18">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[responseBody]</OutArgument>
                   </Assign.To>
@@ -325,7 +327,7 @@
                     <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Reset Reason" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_19">
+                <Assign DisplayName="Reset Reason" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_19">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[reason]</OutArgument>
                   </Assign.To>
@@ -333,7 +335,7 @@
                     <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Record Request Start" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_20">
+                <Assign DisplayName="Record Request Start" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_20">
                   <Assign.To>
                     <OutArgument x:TypeArguments="s:DateTime">[requestStartedUtc]</OutArgument>
                   </Assign.To>
@@ -341,92 +343,152 @@
                     <InArgument x:TypeArguments="s:DateTime">[DateTime.UtcNow]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <TryCatch DisplayName="Request And Classify Service" sap:VirtualizedContainerService.HintSize="488,2546" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+                <TryCatch DisplayName="Request And Classify Service" sap:VirtualizedContainerService.HintSize="522,3670.6666666666665" sap2010:WorkflowViewState.IdRef="TryCatch_1">
                   <TryCatch.Try>
-                    <Sequence DisplayName="Try" sap:VirtualizedContainerService.HintSize="484,1650.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                    <Sequence DisplayName="Try" sap:VirtualizedContainerService.HintSize="520,2775.3333333333335" sap2010:WorkflowViewState.IdRef="Sequence_7">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <Sequence DisplayName="HTTP Response Received" sap:VirtualizedContainerService.HintSize="450,1590.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                      <Sequence DisplayName="HTTP Response Received" sap:VirtualizedContainerService.HintSize="486,2715.3333333333335" sap2010:WorkflowViewState.IdRef="Sequence_10">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <uwah:NetHttpRequest BasicAuthPassword="{x:Null}" BasicAuthSecurePassword="{x:Null}" BasicAuthUsername="{x:Null}" BinaryPayload="{x:Null}" ClientCertPassword="{x:Null}" ClientCertPath="{x:Null}" ClientCertSecurePassword="{x:Null}" Cookies="{x:Null}" CustomNegotiatedAuthCredentials="{x:Null}" FilePath="{x:Null}" FormData="{x:Null}" Headers="{x:Null}" LocalFiles="{x:Null}" OAuthToken="{x:Null}" OutputFileName="{x:Null}" OutputFileTargetFolder="{x:Null}" Parameters="{x:Null}" PathResource="{x:Null}" ProxyConfiguration="{x:Null}" ResourceFiles="{x:Null}" TextPayload="{x:Null}" AuthenticationType="None" ContinueOnError="True" DisableSslVerification="False" DisplayName="HTTP Request" EnableCookies="True" FileOverwrite="AutoRename" FollowRedirects="True" FormDataParts="[New List (Of FormDataPart) From _&#xA;{&#xA;&#x9;New FileFormDataPart(),&#xA;&#x9;New BinaryFormDataPart(),&#xA;&#x9;New TextFormDataPart()&#xA;}]" sap:VirtualizedContainerService.HintSize="416,281.3333333333333" sap2010:WorkflowViewState.IdRef="NetHttpRequest_1" InitialDelay="500" MaxRedirects="3" MaxRetryAfterDelay="30000" Method="GET" Multiplier="2" PreferRetryAfterValue="True" RequestBodyType="None" RequestUrl="[endpoint]" Result="[httpResponse]" RetryCount="3" RetryStatusCodes="[New List (Of System.Net.HttpStatusCode) From _&#xA;{&#xA;&#x9;System.Net.HttpStatusCode.RequestTimeout,&#xA;&#x9;System.Net.HttpStatusCode.TooManyRequests,&#xA;&#x9;System.Net.HttpStatusCode.InternalServerError,&#xA;&#x9;System.Net.HttpStatusCode.BadGateway,&#xA;&#x9;System.Net.HttpStatusCode.ServiceUnavailable,&#xA;&#x9;System.Net.HttpStatusCode.GatewayTimeout&#xA;}]" SaveRawRequestResponse="False" SaveResponseAsFile="False" TextPayloadContentType="application/json" TextPayloadEncoding="UTF-8" TlsProtocol="Automatic" UseJitter="True" UseOsNegotiatedAuthCredentials="True">
+                        <Assign sap:VirtualizedContainerService.HintSize="452,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_52">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="uwahm:HttpResponseSummary">[httpResponse]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="uwahm:HttpResponseSummary">[Nothing]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <uwah:NetHttpRequest BasicAuthPassword="{x:Null}" BasicAuthSecurePassword="{x:Null}" BasicAuthUsername="{x:Null}" BinaryPayload="{x:Null}" ClientCertPassword="{x:Null}" ClientCertPath="{x:Null}" ClientCertSecurePassword="{x:Null}" Cookies="{x:Null}" CustomNegotiatedAuthCredentials="{x:Null}" FilePath="{x:Null}" FormData="{x:Null}" Headers="{x:Null}" LocalFiles="{x:Null}" OAuthToken="{x:Null}" OutputFileName="{x:Null}" OutputFileTargetFolder="{x:Null}" Parameters="{x:Null}" PathResource="{x:Null}" ProxyConfiguration="{x:Null}" ResourceFiles="{x:Null}" TextPayload="{x:Null}" AuthenticationType="None" ContinueOnError="True" DisableSslVerification="False" DisplayName="HTTP Request" EnableCookies="True" FileOverwrite="AutoRename" FollowRedirects="True" FormDataParts="[New List (Of FormDataPart) From _&#xA;{&#xA;&#x9;New FileFormDataPart(),&#xA;&#x9;New BinaryFormDataPart(),&#xA;&#x9;New TextFormDataPart()&#xA;}]" sap:VirtualizedContainerService.HintSize="452,281.3333333333333" sap2010:WorkflowViewState.IdRef="NetHttpRequest_1" InitialDelay="500" MaxRedirects="3" MaxRetryAfterDelay="30000" Method="GET" Multiplier="2" PreferRetryAfterValue="True" RequestBodyType="None" RequestUrl="[endpoint]" Result="[httpResponse]" RetryCount="1" RetryStatusCodes="[New List (Of System.Net.HttpStatusCode) From _&#xA;{&#xA;&#x9;System.Net.HttpStatusCode.RequestTimeout,&#xA;&#x9;System.Net.HttpStatusCode.TooManyRequests,&#xA;&#x9;System.Net.HttpStatusCode.InternalServerError,&#xA;&#x9;System.Net.HttpStatusCode.BadGateway,&#xA;&#x9;System.Net.HttpStatusCode.ServiceUnavailable,&#xA;&#x9;System.Net.HttpStatusCode.GatewayTimeout&#xA;}]" SaveRawRequestResponse="False" SaveResponseAsFile="False" TextPayloadContentType="application/json" TextPayloadEncoding="UTF-8" TlsProtocol="Automatic" UseJitter="True" UseOsNegotiatedAuthCredentials="True">
                           <uwah:NetHttpRequest.TimeoutInMiliseconds>
                             <InArgument x:TypeArguments="s:Nullable(x:Int32)">
                               <Literal x:TypeArguments="s:Nullable(x:Int32)" Value="3000" />
                             </InArgument>
                           </uwah:NetHttpRequest.TimeoutInMiliseconds>
                         </uwah:NetHttpRequest>
-                        <Assign DisplayName="Measure HTTP Response Time" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_37">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:Int64">[responseTimeMs]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:Int64">[CLng((DateTime.UtcNow - requestStartedUtc).TotalMilliseconds)]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <Assign DisplayName="Capture HTTP Status" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_38">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:Int32">[httpStatus]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(httpResponse.StatusCode)]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_39">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:String">[responseBody]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:String">[httpResponse.TextContent]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <ui:DeserializeJson x:TypeArguments="njl:JObject" JsonSample="{x:Null}" Settings="{x:Null}" DisplayName="Deserialize JSON" sap:VirtualizedContainerService.HintSize="416,176" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[healthJson]" JsonString="[responseBody]" />
-                        <Assign DisplayName="Read Reported State" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_40">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:String">[reportedState]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:String">[healthJson.SelectToken("status").ToString.ToLowerInvariant]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <Assign DisplayName="Read Health Message" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_41">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:String">[reason]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:String">[healthJson.SelectToken("message").ToString]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <Assign DisplayName="Classify HTTP Response" sap:VirtualizedContainerService.HintSize="416,167.33333333333334" sap2010:WorkflowViewState.IdRef="Assign_42">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:String">[currentState]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:String">[If(httpStatus = 200 AndAlso reportedState = "healthy", "Healthy", "Degraded")]</InArgument>
-                          </Assign.Value>
-                        </Assign>
+                        <If Condition="[httpResponse Is Nothing]" sap:VirtualizedContainerService.HintSize="452,2174.6666666666665" sap2010:WorkflowViewState.IdRef="If_6">
+                          <If.Then>
+                            <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,757.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_53">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int64">[responseTimeMs]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int64">[CLng((DateTime.UtcNow - requestStartedUtc).TotalMilliseconds)]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_54">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[currentState]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">["Down"]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_55">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int32">[httpStatus]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int32">[0]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign sap:VirtualizedContainerService.HintSize="416,167.33333333333334" sap2010:WorkflowViewState.IdRef="Assign_56">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[reason]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">["No HTTP response: request canceled, timed out, or connection failed"]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                            </Sequence>
+                          </If.Then>
+                          <If.Else>
+                            <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,1286.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <Assign DisplayName="Measure HTTP Response Time" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_37">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int64">[responseTimeMs]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int64">[CLng((DateTime.UtcNow - requestStartedUtc).TotalMilliseconds)]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign DisplayName="Capture HTTP Status" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_38">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int32">[httpStatus]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(httpResponse.StatusCode)]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_39">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[responseBody]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">[httpResponse.TextContent]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <ui:DeserializeJson x:TypeArguments="njl:JObject" JsonSample="{x:Null}" Settings="{x:Null}" DisplayName="Deserialize JSON" sap:VirtualizedContainerService.HintSize="416,176" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[healthJson]" JsonString="[responseBody]" />
+                              <Assign DisplayName="Read Reported State" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_40">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[reportedState]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">[healthJson.SelectToken("status").ToString.ToLowerInvariant]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign DisplayName="Read Health Message" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_41">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[reason]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">[healthJson.SelectToken("message").ToString]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign DisplayName="Classify HTTP Response" sap:VirtualizedContainerService.HintSize="416,167.33333333333334" sap2010:WorkflowViewState.IdRef="Assign_42">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[currentState]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">[If(httpStatus = 200 AndAlso reportedState = "healthy", "Healthy", "Degraded")]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                            </Sequence>
+                          </If.Else>
+                        </If>
                       </Sequence>
                     </Sequence>
                   </TryCatch.Try>
                   <TryCatch.Catches>
-                    <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_1">
-                      <ActivityAction x:TypeArguments="s:Exception">
+                    <Catch x:TypeArguments="stt:TaskCanceledException" sap2010:WorkflowViewState.IdRef="Catch`1_4">
+                      <ActivityAction x:TypeArguments="stt:TaskCanceledException">
                         <ActivityAction.Argument>
-                          <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                          <DelegateInArgument x:TypeArguments="stt:TaskCanceledException" Name="exception" />
                         </ActivityAction.Argument>
-                        <Sequence DisplayName="Catch" sap:VirtualizedContainerService.HintSize="484,663.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                        <Sequence DisplayName="Catch" sap:VirtualizedContainerService.HintSize="520,663.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_9">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <Sequence DisplayName="Classify Connection Failure" sap:VirtualizedContainerService.HintSize="450,603.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                          <Sequence DisplayName="Classify Connection Failure" sap:VirtualizedContainerService.HintSize="486,603.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_12">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -462,7 +524,7 @@
                     </Catch>
                   </TryCatch.Catches>
                   <TryCatch.Finally>
-                    <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="484,90.66666666666667" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                    <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="520,90.66666666666667" sap2010:WorkflowViewState.IdRef="Sequence_8">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -471,7 +533,7 @@
                     </Sequence>
                   </TryCatch.Finally>
                 </TryCatch>
-                <Assign DisplayName="Set UTC Timestamp" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_21">
+                <Assign DisplayName="Set UTC Timestamp" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_21">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[timestampUtc]</OutArgument>
                   </Assign.To>
@@ -479,7 +541,7 @@
                     <InArgument x:TypeArguments="x:String">[DateTime.UtcNow.ToString("o")]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Determine Transition Action" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_22">
+                <Assign DisplayName="Determine Transition Action" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_22">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[transitionAction]</OutArgument>
                   </Assign.To>
@@ -491,7 +553,7 @@ If(currentState = "Down" AndAlso previousState = "Degraded", "CriticalEscalation
 If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Set Alert Required" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_23">
+                <Assign DisplayName="Set Alert Required" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_23">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Boolean">[alertRequired]</OutArgument>
                   </Assign.To>
@@ -499,7 +561,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Boolean">[transitionAction.EndsWith("Pending", StringComparison.Ordinal)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Determine Alert Severity" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_46">
+                <Assign DisplayName="Determine Alert Severity" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_46">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[alertSeverity]</OutArgument>
                   </Assign.To>
@@ -507,7 +569,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:String">[If(transitionAction = "WarningPending", "WARNING", If(transitionAction = "RecoveryPending", "RECOVERY", "CRITICAL"))]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Reset Alert Result" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_47">
+                <Assign DisplayName="Reset Alert Result" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_47">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Boolean">[alertSent]</OutArgument>
                   </Assign.To>
@@ -515,7 +577,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <If Condition="[alertRequired]" DisplayName="Send Transition Alert" sap:VirtualizedContainerService.HintSize="488,1729.3333333333333" sap2010:WorkflowViewState.IdRef="If_1">
+                <If Condition="[alertRequired]" DisplayName="Send Transition Alert" sap:VirtualizedContainerService.HintSize="522,1729.3333333333333" sap2010:WorkflowViewState.IdRef="If_1">
                   <If.Then>
                     <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="452,1476.6666666666667" sap2010:WorkflowViewState.IdRef="TryCatch_4">
                       <TryCatch.Try>
@@ -615,7 +677,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     </TryCatch>
                   </If.Then>
                 </If>
-                <Assign DisplayName="Increment Total Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_24">
+                <Assign DisplayName="Increment Total Checks" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_24">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[totalChecks]</OutArgument>
                   </Assign.To>
@@ -623,7 +685,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[totalChecks + 1]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Increment Healthy Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_25">
+                <Assign DisplayName="Increment Healthy Checks" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_25">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[healthyChecks]</OutArgument>
                   </Assign.To>
@@ -631,7 +693,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[healthyChecks + If(currentState = "Healthy", 1, 0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Increment Degraded Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_26">
+                <Assign DisplayName="Increment Degraded Checks" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_26">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[degradedChecks]</OutArgument>
                   </Assign.To>
@@ -639,7 +701,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[degradedChecks + If(currentState = "Degraded", 1, 0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Increment Down Checks" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_27">
+                <Assign DisplayName="Increment Down Checks" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_27">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[downChecks]</OutArgument>
                   </Assign.To>
@@ -647,7 +709,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[downChecks + If(currentState = "Down", 1, 0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Increment Incident Count" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_28">
+                <Assign DisplayName="Increment Incident Count" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_28">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[incidentCount]</OutArgument>
                   </Assign.To>
@@ -655,7 +717,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[incidentCount + If(transitionAction = "WarningPending" OrElse transitionAction = "CriticalPending", 1, 0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <Assign DisplayName="Increment Recovery Count" sap:VirtualizedContainerService.HintSize="488,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_29">
+                <Assign DisplayName="Increment Recovery Count" sap:VirtualizedContainerService.HintSize="522,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_29">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:Int32">[recoveryCount]</OutArgument>
                   </Assign.To>
@@ -663,7 +725,7 @@ If(currentState = "Down", "CriticalPending", "WarningPending")))))]</InArgument>
                     <InArgument x:TypeArguments="x:Int32">[recoveryCount + If(transitionAction = "RecoveryPending", 1, 0)]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <If Condition="[transitionAction = &quot;WarningPending&quot; OrElse transitionAction = &quot;CriticalPending&quot; OrElse transitionAction = &quot;CriticalEscalationPending&quot;]" DisplayName="Record Incident Timestamps" sap:VirtualizedContainerService.HintSize="488,784.6666666666666" sap2010:WorkflowViewState.IdRef="If_3">
+                <If Condition="[transitionAction = &quot;WarningPending&quot; OrElse transitionAction = &quot;CriticalPending&quot; OrElse transitionAction = &quot;CriticalEscalationPending&quot;]" DisplayName="Record Incident Timestamps" sap:VirtualizedContainerService.HintSize="522,784.6666666666666" sap2010:WorkflowViewState.IdRef="If_3">
                   <If.Then>
                     <Sequence DisplayName="Update Incident Timestamps" sap:VirtualizedContainerService.HintSize="486,624.6666666666666" sap2010:WorkflowViewState.IdRef="Sequence_3">
                       <sap:WorkflowViewStateService.ViewState>
