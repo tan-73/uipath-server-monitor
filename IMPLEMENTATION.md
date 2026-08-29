@@ -238,7 +238,7 @@ Main
 │   ├── For Each service
 │   │   ├── Start response timer
 │   │   ├── Try
-│   │   │   ├── HTTP Request: GET /health
+│   │   │   ├── Synchronous HTTP probe: GET /health
 │   │   │   ├── Capture status code and body
 │   │   │   ├── Deserialize JSON
 │   │   │   └── Classify Healthy or Degraded
@@ -377,7 +377,8 @@ Status: **Complete.**
 Status: **Complete and tested from Windows.**
 
 - Create service configuration.
-- Implement HTTP polling and timeout handling.
+- Implement HTTP polling and timeout handling, with connection failures contained inside the
+  synchronous probe so a stopped service is classified as Down without terminating the workflow.
 - Parse JSON responses.
 - Implement state classification and transition tracking.
 - Write structured logs.

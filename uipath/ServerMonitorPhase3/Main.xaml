@@ -351,128 +351,71 @@
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <Sequence DisplayName="HTTP Response Received" sap:VirtualizedContainerService.HintSize="486,2715.3333333333335" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                      <Sequence DisplayName="HTTP Probe" sap:VirtualizedContainerService.HintSize="486,1400" sap2010:WorkflowViewState.IdRef="Sequence_10">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <Assign sap:VirtualizedContainerService.HintSize="452,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_52">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="uwahm:HttpResponseSummary">[httpResponse]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="uwahm:HttpResponseSummary">[Nothing]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <uwah:NetHttpRequest BasicAuthPassword="{x:Null}" BasicAuthSecurePassword="{x:Null}" BasicAuthUsername="{x:Null}" BinaryPayload="{x:Null}" ClientCertPassword="{x:Null}" ClientCertPath="{x:Null}" ClientCertSecurePassword="{x:Null}" Cookies="{x:Null}" CustomNegotiatedAuthCredentials="{x:Null}" FilePath="{x:Null}" FormData="{x:Null}" Headers="{x:Null}" LocalFiles="{x:Null}" OAuthToken="{x:Null}" OutputFileName="{x:Null}" OutputFileTargetFolder="{x:Null}" Parameters="{x:Null}" PathResource="{x:Null}" ProxyConfiguration="{x:Null}" ResourceFiles="{x:Null}" TextPayload="{x:Null}" AuthenticationType="None" ContinueOnError="True" DisableSslVerification="False" DisplayName="HTTP Request" EnableCookies="True" FileOverwrite="AutoRename" FollowRedirects="True" FormDataParts="[New List (Of FormDataPart) From _&#xA;{&#xA;&#x9;New FileFormDataPart(),&#xA;&#x9;New BinaryFormDataPart(),&#xA;&#x9;New TextFormDataPart()&#xA;}]" sap:VirtualizedContainerService.HintSize="452,281.3333333333333" sap2010:WorkflowViewState.IdRef="NetHttpRequest_1" InitialDelay="500" MaxRedirects="3" MaxRetryAfterDelay="30000" Method="GET" Multiplier="2" PreferRetryAfterValue="True" RequestBodyType="None" RequestUrl="[endpoint]" Result="[httpResponse]" RetryCount="1" RetryStatusCodes="[New List (Of System.Net.HttpStatusCode) From _&#xA;{&#xA;&#x9;System.Net.HttpStatusCode.RequestTimeout,&#xA;&#x9;System.Net.HttpStatusCode.TooManyRequests,&#xA;&#x9;System.Net.HttpStatusCode.InternalServerError,&#xA;&#x9;System.Net.HttpStatusCode.BadGateway,&#xA;&#x9;System.Net.HttpStatusCode.ServiceUnavailable,&#xA;&#x9;System.Net.HttpStatusCode.GatewayTimeout&#xA;}]" SaveRawRequestResponse="False" SaveResponseAsFile="False" TextPayloadContentType="application/json" TextPayloadEncoding="UTF-8" TlsProtocol="Automatic" UseJitter="True" UseOsNegotiatedAuthCredentials="True">
-                          <uwah:NetHttpRequest.TimeoutInMiliseconds>
-                            <InArgument x:TypeArguments="s:Nullable(x:Int32)">
-                              <Literal x:TypeArguments="s:Nullable(x:Int32)" Value="3000" />
-                            </InArgument>
-                          </uwah:NetHttpRequest.TimeoutInMiliseconds>
-                        </uwah:NetHttpRequest>
-                        <If Condition="[httpResponse Is Nothing]" sap:VirtualizedContainerService.HintSize="452,2174.6666666666665" sap2010:WorkflowViewState.IdRef="If_6">
-                          <If.Then>
-                            <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,757.3333333333334" sap2010:WorkflowViewState.IdRef="Sequence_19">
-                              <sap:WorkflowViewStateService.ViewState>
-                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                                </scg:Dictionary>
-                              </sap:WorkflowViewStateService.ViewState>
-                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_53">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Int64">[responseTimeMs]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Int64">[CLng((DateTime.UtcNow - requestStartedUtc).TotalMilliseconds)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_54">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[currentState]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">["Down"]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_55">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Int32">[httpStatus]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Int32">[0]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap:VirtualizedContainerService.HintSize="416,167.33333333333334" sap2010:WorkflowViewState.IdRef="Assign_56">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[reason]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">["No HTTP response: request canceled, timed out, or connection failed"]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                            </Sequence>
-                          </If.Then>
-                          <If.Else>
-                            <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,1286.6666666666667" sap2010:WorkflowViewState.IdRef="Sequence_20">
-                              <sap:WorkflowViewStateService.ViewState>
-                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                                </scg:Dictionary>
-                              </sap:WorkflowViewStateService.ViewState>
-                              <Assign DisplayName="Measure HTTP Response Time" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_37">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Int64">[responseTimeMs]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Int64">[CLng((DateTime.UtcNow - requestStartedUtc).TotalMilliseconds)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign DisplayName="Capture HTTP Status" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_38">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Int32">[httpStatus]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(httpResponse.StatusCode)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_39">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[responseBody]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[httpResponse.TextContent]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <ui:DeserializeJson x:TypeArguments="njl:JObject" JsonSample="{x:Null}" Settings="{x:Null}" DisplayName="Deserialize JSON" sap:VirtualizedContainerService.HintSize="416,176" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[healthJson]" JsonString="[responseBody]" />
-                              <Assign DisplayName="Read Reported State" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_40">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[reportedState]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[healthJson.SelectToken("status").ToString.ToLowerInvariant]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign DisplayName="Read Health Message" sap:VirtualizedContainerService.HintSize="416,176.66666666666666" sap2010:WorkflowViewState.IdRef="Assign_41">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[reason]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[healthJson.SelectToken("message").ToString]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign DisplayName="Classify HTTP Response" sap:VirtualizedContainerService.HintSize="416,167.33333333333334" sap2010:WorkflowViewState.IdRef="Assign_42">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[currentState]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[If(httpStatus = 200 AndAlso reportedState = "healthy", "Healthy", "Degraded")]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                            </Sequence>
-                          </If.Else>
-                        </If>
+                        <ui:InvokeCode ContinueOnError="False" DisplayName="Probe Service HTTP" Language="VBNet" Code="httpStatus = 0
+responseBody = String.Empty
+currentState = &quot;Down&quot;
+reason = &quot;No HTTP response&quot;
+Dim started = DateTime.UtcNow
+
+Try
+    Dim request As System.Net.HttpWebRequest = System.Net.WebRequest.CreateHttp(endpoint)
+    request.Method = &quot;GET&quot;
+    request.Timeout = 3000
+    request.ReadWriteTimeout = 3000
+    request.KeepAlive = False
+
+    Dim response As System.Net.HttpWebResponse = Nothing
+    Try
+        response = CType(request.GetResponse(), System.Net.HttpWebResponse)
+    Catch ex As System.Net.WebException
+        If ex.Response Is Nothing Then
+            Throw
+        End If
+        response = CType(ex.Response, System.Net.HttpWebResponse)
+    End Try
+
+    Using response
+        httpStatus = CInt(response.StatusCode)
+        Using reader As New System.IO.StreamReader(response.GetResponseStream())
+            responseBody = reader.ReadToEnd()
+        End Using
+    End Using
+
+    Dim json As Newtonsoft.Json.Linq.JObject = Newtonsoft.Json.Linq.JObject.Parse(responseBody)
+    Dim reportedState As String = json.SelectToken(&quot;status&quot;).ToString().ToLowerInvariant()
+    reason = json.SelectToken(&quot;message&quot;).ToString()
+
+    If httpStatus = 200 AndAlso reportedState = &quot;healthy&quot; Then
+        currentState = &quot;Healthy&quot;
+    Else
+        currentState = &quot;Degraded&quot;
+    End If
+Catch ex As System.Net.WebException
+    currentState = &quot;Down&quot;
+    reason = ex.GetType().Name &amp; &quot;: &quot; &amp; ex.Message
+Catch ex As Exception
+    currentState = &quot;Down&quot;
+    reason = ex.GetType().Name &amp; &quot;: &quot; &amp; ex.Message
+Finally
+    responseTimeMs = CLng((DateTime.UtcNow - started).TotalMilliseconds)
+End Try" sap:VirtualizedContainerService.HintSize="452,281.3333333333333" sap2010:WorkflowViewState.IdRef="InvokeCode_1">
+                          <ui:InvokeCode.Arguments>
+                            <scg:Dictionary x:TypeArguments="x:String, Argument">
+                              <InArgument x:TypeArguments="x:String" x:Key="endpoint">[endpoint]</InArgument>
+                              <OutArgument x:TypeArguments="x:Int32" x:Key="httpStatus">[httpStatus]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="responseBody">[responseBody]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="currentState">[currentState]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="reason">[reason]</OutArgument>
+                              <OutArgument x:TypeArguments="x:Int64" x:Key="responseTimeMs">[responseTimeMs]</OutArgument>
+                            </scg:Dictionary>
+                          </ui:InvokeCode.Arguments>
+                        </ui:InvokeCode>
                       </Sequence>
                     </Sequence>
                   </TryCatch.Try>
